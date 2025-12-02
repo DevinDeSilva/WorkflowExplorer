@@ -1,0 +1,410 @@
+question_lbl,function_name,example,param_map,param_desc
+What is the output port used by this program?,provone:Program->provone:hasOutPort->provone:Port,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#system_prompt_generator> provone:hasOutPort  ?value  .
+}",obj,The URI of the starting object.
+What are the input ports for this program?,provone:Program->provone:hasInPort->provone:Port,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#sparql_query_extractor> provone:hasInPort  ?value  .
+}",obj,The URI of the starting object.
+What is the channel that the output port of this program connects to?,provone:Program->provone:hasOutPort->provone:Port->provone:connectsTo->provone:Channel,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#information_extractor> provone:hasOutPort ?a1  .
+  ?a1 provone:connectsTo  ?value  .
+}",obj,The URI of the starting object.
+What is the channel connected to the input port of this program?,provone:Program->provone:hasInPort->provone:Port->provone:connectsTo->provone:Channel,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#llm_chat> provone:hasInPort ?a1  .
+  ?a1 provone:connectsTo  ?value  .
+}",obj,The URI of the starting object.
+What is the input port used in this usage event?,prov:Usage->provone:hadInPort->provone:Port,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Usage-id_20251115033623_831-text> provone:hadInPort  ?value  .
+}",obj,The URI of the starting object.
+What is the entity used in this usage event?,prov:Usage->provone:hadEntity->provone:Data,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Usage-id_20251115035439_906-gender> provone:hadEntity  ?value  .
+}",obj,The URI of the starting object.
+Which channel does the input port of this execution connect to?,prov:Usage->provone:hadInPort->provone:Port->provone:connectsTo->provone:Channel,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Usage-id_20251115034655_509-kg_knowledge> provone:hadInPort ?a1  .
+  ?a1 provone:connectsTo  ?value  .
+}",obj,The URI of the starting object.
+Which execution generated the entity associated with this usage event?,prov:Usage->provone:hadEntity->provone:Data->prov:wasGeneratedBy->provone:Execution,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Usage-id_20251115033923_188-system_prompt> provone:hadEntity ?a1  .
+  ?a1 prov:wasGeneratedBy  ?value  .
+}",obj,The URI of the starting object.
+What is the association related to the usage event of this entity?,prov:Usage->provone:hadEntity->provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedAssociation->prov:Association,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Usage-id_20251115035222_446-text> provone:hadEntity ?a1  .
+  ?a1 prov:wasGeneratedBy ?a3  .
+  ?a3 prov:qualifiedAssociation  ?value  .
+}",obj,The URI of the starting object.
+What was the generation event that led to the creation of this particular data entity used?,prov:Usage->provone:hadEntity->provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedGeneration->prov:Generation,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Usage-id_20251115034723_490-text> provone:hadEntity ?a1  .
+  ?a1 prov:wasGeneratedBy ?a3  .
+  ?a3 prov:qualifiedGeneration  ?value  .
+}",obj,The URI of the starting object.
+Who was the user associated with the generation of this entity?,prov:Usage->provone:hadEntity->provone:Data->prov:wasGeneratedBy->provone:Execution->prov:wasAssociatedWith->provone:User,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Usage-id_20251115034552_974-system_prompt> provone:hadEntity ?a1  .
+  ?a1 prov:wasGeneratedBy ?a3  .
+  ?a3 prov:wasAssociatedWith  ?value  .
+}",obj,The URI of the starting object.
+Who was the agent responsible for generating the entity used in this particular usage event?,prov:Usage->provone:hadEntity->provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedAssociation->prov:Association->prov:agent->provone:User,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Usage-id_20251115033527_837-text> provone:hadEntity ?a1  .
+  ?a1 prov:wasGeneratedBy ?a3  .
+  ?a3 prov:qualifiedAssociation ?a5  .
+  ?a5 prov:agent  ?value  .
+}",obj,The URI of the starting object.
+What was the program plan used in the execution that generated the provided entity within this usage?,prov:Usage->provone:hadEntity->provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedAssociation->prov:Association->prov:hadPlan->provone:Program,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Usage-id_20251115033954_44-text> provone:hadEntity ?a1  .
+  ?a1 prov:wasGeneratedBy ?a3  .
+  ?a3 prov:qualifiedAssociation ?a5  .
+  ?a5 prov:hadPlan  ?value  .
+}",obj,The URI of the starting object.
+What is the output port used when this entity was generated?,prov:Usage->provone:hadEntity->provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedGeneration->prov:Generation->provone:hadOutPort->provone:Port,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Usage-id_20251115034954_865-system_prompt> provone:hadEntity ?a1  .
+  ?a1 prov:wasGeneratedBy ?a3  .
+  ?a3 prov:qualifiedGeneration ?a5  .
+  ?a5 provone:hadOutPort  ?value  .
+}",obj,The URI of the starting object.
+What is the output port of the program used in the generation of this entity?,prov:Usage->provone:hadEntity->provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedAssociation->prov:Association->prov:hadPlan->provone:Program->provone:hasOutPort->provone:Port,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Usage-id_20251115033851_918-system_prompt> provone:hadEntity ?a1  .
+  ?a1 prov:wasGeneratedBy ?a3  .
+  ?a3 prov:qualifiedAssociation ?a5  .
+  ?a5 prov:hadPlan ?a7  .
+  ?a7 provone:hasOutPort  ?value  .
+}",obj,The URI of the starting object.
+What are the input ports of the program that generated this entity?,prov:Usage->provone:hadEntity->provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedAssociation->prov:Association->prov:hadPlan->provone:Program->provone:hasInPort->provone:Port,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Usage-id_20251115035654_682-system_prompt> provone:hadEntity ?a1  .
+  ?a1 prov:wasGeneratedBy ?a3  .
+  ?a3 prov:qualifiedAssociation ?a5  .
+  ?a5 prov:hadPlan ?a7  .
+  ?a7 provone:hasInPort  ?value  .
+}",obj,The URI of the starting object.
+What is the channel connected to the output port used during the generation of the entity in this usage?,prov:Usage->provone:hadEntity->provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedGeneration->prov:Generation->provone:hadOutPort->provone:Port->provone:connectsTo->provone:Channel,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Usage-id_20251115034054_302-system_prompt> provone:hadEntity ?a1  .
+  ?a1 prov:wasGeneratedBy ?a3  .
+  ?a3 prov:qualifiedGeneration ?a5  .
+  ?a5 provone:hadOutPort ?a7  .
+  ?a7 provone:connectsTo  ?value  .
+}",obj,The URI of the starting object.
+Which channel is connected to the output port of the program that was responsible for generating this entity in the specified usage event?,prov:Usage->provone:hadEntity->provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedAssociation->prov:Association->prov:hadPlan->provone:Program->provone:hasOutPort->provone:Port->provone:connectsTo->provone:Channel,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Usage-id_20251115035254_984-text> provone:hadEntity ?a1  .
+  ?a1 prov:wasGeneratedBy ?a3  .
+  ?a3 prov:qualifiedAssociation ?a5  .
+  ?a5 prov:hadPlan ?a7  .
+  ?a7 provone:hasOutPort ?a9  .
+  ?a9 provone:connectsTo  ?value  .
+}",obj,The URI of the starting object.
+What channel is connected to the input port of the program that generated the data used in this usage event?,prov:Usage->provone:hadEntity->provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedAssociation->prov:Association->prov:hadPlan->provone:Program->provone:hasInPort->provone:Port->provone:connectsTo->provone:Channel,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Usage-id_20251115033552_939-text> provone:hadEntity ?a1  .
+  ?a1 prov:wasGeneratedBy ?a3  .
+  ?a3 prov:qualifiedAssociation ?a5  .
+  ?a5 prov:hadPlan ?a7  .
+  ?a7 provone:hasInPort ?a9  .
+  ?a9 provone:connectsTo  ?value  .
+}",obj,The URI of the starting object.
+What is the program that is the output of this AI task?,eo:AITask->sio:SIO_000229->provone:Program,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#AI_Task-information_extractor> sio:SIO_000229  ?value  .
+}",obj,The URI of the starting object.
+What inputs were provided to this AI task?,eo:AITask->sio:SIO_000230->eo:ObjectRecord,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#AI_Task-system_prompt_generator> sio:SIO_000230  ?value  .
+}",obj,The URI of the starting object.
+What is the output port of the AI task within this program?,eo:AITask->sio:SIO_000229->provone:Program->provone:hasOutPort->provone:Port,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#AI_Task-DF_combine> sio:SIO_000229 ?a1  .
+  ?a1 provone:hasOutPort  ?value  .
+}",obj,The URI of the starting object.
+What are the input ports for the program generated by this AI task?,eo:AITask->sio:SIO_000229->provone:Program->provone:hasInPort->provone:Port,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#AI_Task-batch_sparql_query_extractor> sio:SIO_000229 ?a1  .
+  ?a1 provone:hasInPort  ?value  .
+}",obj,The URI of the starting object.
+What is the channel that the output port of this AI task is connected to?,eo:AITask->sio:SIO_000229->provone:Program->provone:hasOutPort->provone:Port->provone:connectsTo->provone:Channel,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#AI_Task-llm_chat> sio:SIO_000229 ?a1  .
+  ?a1 provone:hasOutPort ?a3  .
+  ?a3 provone:connectsTo  ?value  .
+}",obj,The URI of the starting object.
+Which channel connects to the input port of the given AI task?,eo:AITask->sio:SIO_000229->provone:Program->provone:hasInPort->provone:Port->provone:connectsTo->provone:Channel,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#AI_Task-query_result_post_processor> sio:SIO_000229 ?a1  .
+  ?a1 provone:hasInPort ?a3  .
+  ?a3 provone:connectsTo  ?value  .
+}",obj,The URI of the starting object.
+Which association is associated with this execution?,provone:Execution->prov:qualifiedAssociation->prov:Association,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#id_20251115034455_520> prov:qualifiedAssociation  ?value  .
+}",obj,The URI of the starting object.
+What data was used as input by this execution?,provone:Execution->prov:used->provone:Data,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#id_20251115035524_386> prov:used  ?value  .
+}",obj,The URI of the starting object.
+What is the generation event that describes how this execution generated its output?,provone:Execution->prov:qualifiedGeneration->prov:Generation,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#id_20251115035558_77> prov:qualifiedGeneration  ?value  .
+}",obj,The URI of the starting object.
+What is the detailed usage information for this execution?,provone:Execution->prov:qualifiedUsage->prov:Usage,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#id_20251115033925_173> prov:qualifiedUsage  ?value  .
+}",obj,The URI of the starting object.
+Who was the user associated with this execution?,provone:Execution->prov:wasAssociatedWith->provone:User,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#id_20251115033355_96> prov:wasAssociatedWith  ?value  .
+}",obj,The URI of the starting object.
+Who is the user associated with this execution?,provone:Execution->prov:qualifiedAssociation->prov:Association->prov:agent->provone:User,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#id_20251115033725_101> prov:qualifiedAssociation ?a1  .
+  ?a1 prov:agent  ?value  .
+}",obj,The URI of the starting object.
+What was the program that was planned for this execution?,provone:Execution->prov:qualifiedAssociation->prov:Association->prov:hadPlan->provone:Program,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#id_20251115040257_288> prov:qualifiedAssociation ?a1  .
+  ?a1 prov:hadPlan  ?value  .
+}",obj,The URI of the starting object.
+Which output port was used to generate this execution?,provone:Execution->prov:qualifiedGeneration->prov:Generation->provone:hadOutPort->provone:Port,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#id_20251115033853_569> prov:qualifiedGeneration ?a1  .
+  ?a1 provone:hadOutPort  ?value  .
+}",obj,The URI of the starting object.
+What data entity was generated by this specific execution?,provone:Execution->prov:qualifiedGeneration->prov:Generation->provone:hadEntity->provone:Data,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#id_20251115034855_96> prov:qualifiedGeneration ?a1  .
+  ?a1 provone:hadEntity  ?value  .
+}",obj,The URI of the starting object.
+What input port was utilized by this execution?,provone:Execution->prov:qualifiedUsage->prov:Usage->provone:hadInPort->provone:Port,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#id_20251115035625_834> prov:qualifiedUsage ?a1  .
+  ?a1 provone:hadInPort  ?value  .
+}",obj,The URI of the starting object.
+What are the data items that were used by this execution?,provone:Execution->prov:qualifiedUsage->prov:Usage->provone:hadEntity->provone:Data,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#id_20251115033353_430> prov:qualifiedUsage ?a1  .
+  ?a1 provone:hadEntity  ?value  .
+}",obj,The URI of the starting object.
+What is the output port of the program associated with this execution?,provone:Execution->prov:qualifiedAssociation->prov:Association->prov:hadPlan->provone:Program->provone:hasOutPort->provone:Port,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#id_20251115035755_919> prov:qualifiedAssociation ?a1  .
+  ?a1 prov:hadPlan ?a3  .
+  ?a3 provone:hasOutPort  ?value  .
+}",obj,The URI of the starting object.
+What are the input ports of the program used in this execution?,provone:Execution->prov:qualifiedAssociation->prov:Association->prov:hadPlan->provone:Program->provone:hasInPort->provone:Port,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#id_20251115035656_178> prov:qualifiedAssociation ?a1  .
+  ?a1 prov:hadPlan ?a3  .
+  ?a3 provone:hasInPort  ?value  .
+}",obj,The URI of the starting object.
+What channel does the output port of this execution connect to?,provone:Execution->prov:qualifiedGeneration->prov:Generation->provone:hadOutPort->provone:Port->provone:connectsTo->provone:Channel,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#id_20251115034821_959> prov:qualifiedGeneration ?a1  .
+  ?a1 provone:hadOutPort ?a3  .
+  ?a3 provone:connectsTo  ?value  .
+}",obj,The URI of the starting object.
+Which channel does the input port used in this execution connect to?,provone:Execution->prov:qualifiedUsage->prov:Usage->provone:hadInPort->provone:Port->provone:connectsTo->provone:Channel,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#id_20251115034027_682> prov:qualifiedUsage ?a1  .
+  ?a1 provone:hadInPort ?a3  .
+  ?a3 provone:connectsTo  ?value  .
+}",obj,The URI of the starting object.
+What is the channel that the output port of the program associated with this execution connects to?,provone:Execution->prov:qualifiedAssociation->prov:Association->prov:hadPlan->provone:Program->provone:hasOutPort->provone:Port->provone:connectsTo->provone:Channel,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#id_20251115035052_253> prov:qualifiedAssociation ?a1  .
+  ?a1 prov:hadPlan ?a3  .
+  ?a3 provone:hasOutPort ?a5  .
+  ?a5 provone:connectsTo  ?value  .
+}",obj,The URI of the starting object.
+Which channel connects to the input port of the program that was part of this execution's plan?,provone:Execution->prov:qualifiedAssociation->prov:Association->prov:hadPlan->provone:Program->provone:hasInPort->provone:Port->provone:connectsTo->provone:Channel,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#id_20251115033527_163> prov:qualifiedAssociation ?a1  .
+  ?a1 prov:hadPlan ?a3  .
+  ?a3 provone:hasInPort ?a5  .
+  ?a5 provone:connectsTo  ?value  .
+}",obj,The URI of the starting object.
+What is the output port used in this generation event?,prov:Generation->provone:hadOutPort->provone:Port,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Generation-id_20251115033924_181-kg_info> provone:hadOutPort  ?value  .
+}",obj,The URI of the starting object.
+What entity was generated in this generation event?,prov:Generation->provone:hadEntity->provone:Data,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Generation-id_20251115033455_827-extracts> provone:hadEntity  ?value  .
+}",obj,The URI of the starting object.
+Which channel is connected to the output port of this generation event?,prov:Generation->provone:hadOutPort->provone:Port->provone:connectsTo->provone:Channel,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Generation-id_20251115035354_159-extracts> provone:hadOutPort ?a1  .
+  ?a1 provone:connectsTo  ?value  .
+}",obj,The URI of the starting object.
+What is the execution that generated this data item?,prov:Generation->provone:hadEntity->provone:Data->prov:wasGeneratedBy->provone:Execution,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Generation-id_20251115040020_266-generated_answer> provone:hadEntity ?a1  .
+  ?a1 prov:wasGeneratedBy  ?value  .
+}",obj,The URI of the starting object.
+What is the association linked to the generation of this entity?,prov:Generation->provone:hadEntity->provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedAssociation->prov:Association,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Generation-id_20251115035823_456-generated_answer> provone:hadEntity ?a1  .
+  ?a1 prov:wasGeneratedBy ?a3  .
+  ?a3 prov:qualifiedAssociation  ?value  .
+}",obj,The URI of the starting object.
+What specific usage was involved in generating this entity?,prov:Generation->provone:hadEntity->provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedUsage->prov:Usage,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Generation-id_20251115034157_753-kg_info> provone:hadEntity ?a1  .
+  ?a1 prov:wasGeneratedBy ?a3  .
+  ?a3 prov:qualifiedUsage  ?value  .
+}",obj,The URI of the starting object.
+Who was the user associated with the execution that generated this data entity?,prov:Generation->provone:hadEntity->provone:Data->prov:wasGeneratedBy->provone:Execution->prov:wasAssociatedWith->provone:User,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Generation-id_20251115034455_672-kg_info> provone:hadEntity ?a1  .
+  ?a1 prov:wasGeneratedBy ?a3  .
+  ?a3 prov:wasAssociatedWith  ?value  .
+}",obj,The URI of the starting object.
+Who was the user responsible for the execution that generated this entity?,prov:Generation->provone:hadEntity->provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedAssociation->prov:Association->prov:agent->provone:User,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Generation-id_20251115033456_766-post_processed_output> provone:hadEntity ?a1  .
+  ?a1 prov:wasGeneratedBy ?a3  .
+  ?a3 prov:qualifiedAssociation ?a5  .
+  ?a5 prov:agent  ?value  .
+}",obj,The URI of the starting object.
+Which program was responsible for generating this entity?,prov:Generation->provone:hadEntity->provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedAssociation->prov:Association->prov:hadPlan->provone:Program,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Generation-id_20251115035656_547-kg_info> provone:hadEntity ?a1  .
+  ?a1 prov:wasGeneratedBy ?a3  .
+  ?a3 prov:qualifiedAssociation ?a5  .
+  ?a5 prov:hadPlan  ?value  .
+}",obj,The URI of the starting object.
+What was the input port used for the generation of this entity?,prov:Generation->provone:hadEntity->provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedUsage->prov:Usage->provone:hadInPort->provone:Port,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Generation-id_20251115033924_181-kg_info> provone:hadEntity ?a1  .
+  ?a1 prov:wasGeneratedBy ?a3  .
+  ?a3 prov:qualifiedUsage ?a5  .
+  ?a5 provone:hadInPort  ?value  .
+}",obj,The URI of the starting object.
+What is the output port of the program that generated this entity?,prov:Generation->provone:hadEntity->provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedAssociation->prov:Association->prov:hadPlan->provone:Program->provone:hasOutPort->provone:Port,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Generation-id_20251115033725_137-kg_info> provone:hadEntity ?a1  .
+  ?a1 prov:wasGeneratedBy ?a3  .
+  ?a3 prov:qualifiedAssociation ?a5  .
+  ?a5 prov:hadPlan ?a7  .
+  ?a7 provone:hasOutPort  ?value  .
+}",obj,The URI of the starting object.
+What is the input port for the program associated with the generation of this entity?,prov:Generation->provone:hadEntity->provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedAssociation->prov:Association->prov:hadPlan->provone:Program->provone:hasInPort->provone:Port,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Generation-id_20251115035825_945-kg_info> provone:hadEntity ?a1  .
+  ?a1 prov:wasGeneratedBy ?a3  .
+  ?a3 prov:qualifiedAssociation ?a5  .
+  ?a5 prov:hadPlan ?a7  .
+  ?a7 provone:hasInPort  ?value  .
+}",obj,The URI of the starting object.
+Which channel is associated with the input port of the execution that generated this data entity?,prov:Generation->provone:hadEntity->provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedUsage->prov:Usage->provone:hadInPort->provone:Port->provone:connectsTo->provone:Channel,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Generation-id_20251115035422_785-generated_answer> provone:hadEntity ?a1  .
+  ?a1 prov:wasGeneratedBy ?a3  .
+  ?a3 prov:qualifiedUsage ?a5  .
+  ?a5 provone:hadInPort ?a7  .
+  ?a7 provone:connectsTo  ?value  .
+}",obj,The URI of the starting object.
+What is the channel connected to the output port of the program that generated this entity?,prov:Generation->provone:hadEntity->provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedAssociation->prov:Association->prov:hadPlan->provone:Program->provone:hasOutPort->provone:Port->provone:connectsTo->provone:Channel,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Generation-id_20251115033939_516-system_prompt> provone:hadEntity ?a1  .
+  ?a1 prov:wasGeneratedBy ?a3  .
+  ?a3 prov:qualifiedAssociation ?a5  .
+  ?a5 prov:hadPlan ?a7  .
+  ?a7 provone:hasOutPort ?a9  .
+  ?a9 provone:connectsTo  ?value  .
+}",obj,The URI of the starting object.
+What channel connects to the input port of the program plan that generated this entity?,prov:Generation->provone:hadEntity->provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedAssociation->prov:Association->prov:hadPlan->provone:Program->provone:hasInPort->provone:Port->provone:connectsTo->provone:Channel,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Generation-id_20251115035024_243-generated_answer> provone:hadEntity ?a1  .
+  ?a1 prov:wasGeneratedBy ?a3  .
+  ?a3 prov:qualifiedAssociation ?a5  .
+  ?a5 prov:hadPlan ?a7  .
+  ?a7 provone:hasInPort ?a9  .
+  ?a9 provone:connectsTo  ?value  .
+}",obj,The URI of the starting object.
+What data item is a member of this collection?,prov:Collection->prov:hadMember->provone:Data,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Collection-id_20251115034927_856-post_processed_output> prov:hadMember  ?value  .
+}",obj,The URI of the starting object.
+Which channel is this port connected to?,provone:Port->provone:connectsTo->provone:Channel,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#llm_chat-system_prompt> provone:connectsTo  ?value  .
+}",obj,The URI of the starting object.
+Who is the user associated with this association?,prov:Association->prov:agent->provone:User,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#system_prompt_generator-Association> prov:agent  ?value  .
+}",obj,The URI of the starting object.
+What is the plan associated with this association?,prov:Association->prov:hadPlan->provone:Program,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#query_result_post_processor-Association> prov:hadPlan  ?value  .
+}",obj,The URI of the starting object.
+What is the output port for the program that was used as a plan in this association?,prov:Association->prov:hadPlan->provone:Program->provone:hasOutPort->provone:Port,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#query_result_post_processor-Association> prov:hadPlan ?a1  .
+  ?a1 provone:hasOutPort  ?value  .
+}",obj,The URI of the starting object.
+What are the input ports for the program associated with this plan?,prov:Association->prov:hadPlan->provone:Program->provone:hasInPort->provone:Port,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#information_extractor-Association> prov:hadPlan ?a1  .
+  ?a1 provone:hasInPort  ?value  .
+}",obj,The URI of the starting object.
+What is the channel that the output port of this program is connected to?,prov:Association->prov:hadPlan->provone:Program->provone:hasOutPort->provone:Port->provone:connectsTo->provone:Channel,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#information_extractor-Association> prov:hadPlan ?a1  .
+  ?a1 provone:hasOutPort ?a3  .
+  ?a3 provone:connectsTo  ?value  .
+}",obj,The URI of the starting object.
+What is the channel that the input port of this program connects to?,prov:Association->prov:hadPlan->provone:Program->provone:hasInPort->provone:Port->provone:connectsTo->provone:Channel,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#information_extractor-Association> prov:hadPlan ?a1  .
+  ?a1 provone:hasInPort ?a3  .
+  ?a3 provone:connectsTo  ?value  .
+}",obj,The URI of the starting object.
+Which execution process generated this data item?,provone:Data->prov:wasGeneratedBy->provone:Execution,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Data-id_20251115033724_417-generated_answer> prov:wasGeneratedBy  ?value  .
+}",obj,The URI of the starting object.
+Which association is responsible for the execution that generated this data item?,provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedAssociation->prov:Association,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Data-id_20251115033652_334-generated_answer> prov:wasGeneratedBy ?a1  .
+  ?a1 prov:qualifiedAssociation  ?value  .
+}",obj,The URI of the starting object.
+What is the generation event that produced this data item?,provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedGeneration->prov:Generation,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Data-id_20251115035409_697-system_prompt> prov:wasGeneratedBy ?a1  .
+  ?a1 prov:qualifiedGeneration  ?value  .
+}",obj,The URI of the starting object.
+What were the usages qualified during the execution that generated this data item?,provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedUsage->prov:Usage,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Data-id_20251115035439_856-system_prompt> prov:wasGeneratedBy ?a1  .
+  ?a1 prov:qualifiedUsage  ?value  .
+}",obj,The URI of the starting object.
+Who was the user associated with the execution that generated this data item?,provone:Data->prov:wasGeneratedBy->provone:Execution->prov:wasAssociatedWith->provone:User,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Data-id_20251115035823_188-generated_answer> prov:wasGeneratedBy ?a1  .
+  ?a1 prov:wasAssociatedWith  ?value  .
+}",obj,The URI of the starting object.
+Who was the user associated with the execution that generated this data item?,provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedAssociation->prov:Association->prov:agent->provone:User,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Data-id_20251115033551_870-generated_answer> prov:wasGeneratedBy ?a1  .
+  ?a1 prov:qualifiedAssociation ?a3  .
+  ?a3 prov:agent  ?value  .
+}",obj,The URI of the starting object.
+What was the program that generated this data item?,provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedAssociation->prov:Association->prov:hadPlan->provone:Program,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Data-id_20251115035309_273-system_prompt> prov:wasGeneratedBy ?a1  .
+  ?a1 prov:qualifiedAssociation ?a3  .
+  ?a3 prov:hadPlan  ?value  .
+}",obj,The URI of the starting object.
+Which output port was used for generating this data item?,provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedGeneration->prov:Generation->provone:hadOutPort->provone:Port,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Data-id_20251115034722_607-generated_answer> prov:wasGeneratedBy ?a1  .
+  ?a1 prov:qualifiedGeneration ?a3  .
+  ?a3 provone:hadOutPort  ?value  .
+}",obj,The URI of the starting object.
+Which input ports were used in the execution that generated this data item?,provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedUsage->prov:Usage->provone:hadInPort->provone:Port,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Data-id_20251115040009_574-system_prompt> prov:wasGeneratedBy ?a1  .
+  ?a1 prov:qualifiedUsage ?a3  .
+  ?a3 provone:hadInPort  ?value  .
+}",obj,The URI of the starting object.
+What is the output port associated with the program that generated this data item?,provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedAssociation->prov:Association->prov:hadPlan->provone:Program->provone:hasOutPort->provone:Port,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Data-id_20251115033724_417-generated_answer> prov:wasGeneratedBy ?a1  .
+  ?a1 prov:qualifiedAssociation ?a3  .
+  ?a3 prov:hadPlan ?a5  .
+  ?a5 provone:hasOutPort  ?value  .
+}",obj,The URI of the starting object.
+What input ports are specified for the program that generated this data item?,provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedAssociation->prov:Association->prov:hadPlan->provone:Program->provone:hasInPort->provone:Port,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Data-id_20251115034122_150-generated_answer> prov:wasGeneratedBy ?a1  .
+  ?a1 prov:qualifiedAssociation ?a3  .
+  ?a3 prov:hadPlan ?a5  .
+  ?a5 provone:hasInPort  ?value  .
+}",obj,The URI of the starting object.
+Which channel is the output port of the program generating this data item connected to?,provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedGeneration->prov:Generation->provone:hadOutPort->provone:Port->provone:connectsTo->provone:Channel,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Data-id_20251115035839_956-system_prompt> prov:wasGeneratedBy ?a1  .
+  ?a1 prov:qualifiedGeneration ?a3  .
+  ?a3 provone:hadOutPort ?a5  .
+  ?a5 provone:connectsTo  ?value  .
+}",obj,The URI of the starting object.
+What is the channel that the input port for using this data item connects to?,provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedUsage->prov:Usage->provone:hadInPort->provone:Port->provone:connectsTo->provone:Channel,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Data-id_20251115035953_383-generated_answer> prov:wasGeneratedBy ?a1  .
+  ?a1 prov:qualifiedUsage ?a3  .
+  ?a3 provone:hadInPort ?a5  .
+  ?a5 provone:connectsTo  ?value  .
+}",obj,The URI of the starting object.
+What is the channel connected to the output port of the program that generated this data item?,provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedAssociation->prov:Association->prov:hadPlan->provone:Program->provone:hasOutPort->provone:Port->provone:connectsTo->provone:Channel,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Data-id_20251115034025_920-generated_answer> prov:wasGeneratedBy ?a1  .
+  ?a1 prov:qualifiedAssociation ?a3  .
+  ?a3 prov:hadPlan ?a5  .
+  ?a5 provone:hasOutPort ?a7  .
+  ?a7 provone:connectsTo  ?value  .
+}",obj,The URI of the starting object.
+Through which channel is the input provided to the program that generated this data item?,provone:Data->prov:wasGeneratedBy->provone:Execution->prov:qualifiedAssociation->prov:Association->prov:hadPlan->provone:Program->provone:hasInPort->provone:Port->provone:connectsTo->provone:Channel,"SELECT distinct ?value where {
+  <http://testwebsite/testProgram#Data-id_20251115034025_920-generated_answer> prov:wasGeneratedBy ?a1  .
+  ?a1 prov:qualifiedAssociation ?a3  .
+  ?a3 prov:hadPlan ?a5  .
+  ?a5 provone:hasInPort ?a7  .
+  ?a7 provone:connectsTo  ?value  .
+}",obj,The URI of the starting object.
+Explores objects of a given class in the RDF graph.,provone:Channel -> provone:Port -> provone:Program -> provone:Data -> provone:Execution,"SELECT DISTINCT ?value WHERE {
+                            ?value a <http://purl.org/provone#Execution> .
+                            }",class_uri,The URI of the class to explore.
+Explores Attributes of a given object in the RDF graph.,provone:Channel -> provone:Port -> provone:Program -> provone:Data -> provone:Execution,"
+                PREFIX prov: <http://www.w3.org/ns/prov#>
+                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+                SELECT DISTINCT ?p ?o ?pe ?po
+                        WHERE {
+                            # 1. Start with the properties of the target object
+                            <http://testwebsite/testProgram#AI_Task-information_extractor> ?p ?o .
+                            
+                            # 2. Check if the object is a prov:Collection
+                            # This pattern only binds ?isCollection if <http://testwebsite/testProgram#AI_Task-information_extractor> is a prov:Collection
+                            OPTIONAL {
+                                <http://testwebsite/testProgram#AI_Task-information_extractor> rdf:type prov:Collection .
+                                BIND(TRUE AS ?isCollection)
+                            }
+                            
+                            OPTIONAL {
+                                FILTER (bound(?isCollection))
+                                <http://testwebsite/testProgram#AI_Task-information_extractor> prov:hadMember ?member .
+                                ?member ?pe ?po .
+                            }
+                        }",obj_uri,The URI of the object to explore.

@@ -1,0 +1,29 @@
+{
+  "generatedBy": ["ChatBS-NexGen"],
+  "generatedAt": ["2025-11-10T01:48:47Z"],
+  "namespaces": {
+    "provone": ["http://purl.org/provone#"],
+    "skos": ["http://www.w3.org/2004/02/skos/core#"],
+    "prov": ["http://www.w3.org/ns/prov#"],
+    "rdfs": ["http://www.w3.org/2000/01/rdf-schema#"],
+    "cwfo": ["http://cwf.tw.rpi.edu/vocab#"],
+    "dcterms": ["http://purl.org/dc/terms#"],
+    "ChatBS-NexGen": ["http://testwebsite/testProgram#"],
+    "user": ["http://testwebsite/testUser#"],
+    "eo": ["https://purl.org/heals/eo#"],
+    "ep": ["http://linkedu.eu/dedalo/explanationPattern.owl#"],
+    "sio": ["http://semanticscience.org/resource/"],
+    "dc": ["http://purl.org/dc/elements/1.1/"],
+    "DFColumn": ["http://testwebsite/testDFColumn#"],
+    "xsd": ["http://www.w3.org/2001/XMLSchema#"],
+    "food": ["http://purl.org/heals/food/"],
+    "dbo": ["http://dbpedia.org/ontology/"],
+    "dbp": ["http://dbpedia.org/property/"],
+    "dbt": ["http://dbpedia.org/resource/Template:"],
+    "ques": ["http://atomic_questions.org/"],
+    "fnom": ["https://w3id.org/function/vocabulary/mapping#"],
+    "fnoi": ["https://w3id.org/function/vocabulary/implementation#"],
+    "fnoc": ["https://w3id.org/function/vocabulary/composition#"],
+    "fno": ["https://w3id.org/function/vocabulary/core#"]
+  }
+}

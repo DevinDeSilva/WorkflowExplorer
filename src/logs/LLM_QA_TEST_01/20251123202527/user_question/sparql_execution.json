@@ -1,0 +1,10 @@
+{
+  "plan1": {},
+  "summary": {
+    "answer": "The number of AI Generated Function Executions that ran is 107.",
+    "important_facts": [
+      "http://example.org/fact/AIGeneratedFunctionExecutionsCount"
+    ]
+  },
+  "results": []
+}

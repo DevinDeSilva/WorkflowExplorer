@@ -1,0 +1,128 @@
+{
+  "step1": {
+    "mapping_id": "http://atomic_questions.org/eprog32_mapping_20251116000323",
+    "sparql_query_info": {
+      "imp": "\n        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        PREFIX ep: <http://linkedu.eu/dedalo/explanationPattern.owl#>\n        PREFIX eo: <https://purl.org/heals/eo#>\n        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n        PREFIX dc: <http://purl.org/dc/elements/1.1/>\n        PREFIX food: <http://purl.org/heals/food/>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX provone: <http://purl.org/provone#>\n        PREFIX sio:<http://semanticscience.org/resource/>\n        SELECT DISTINCT ?value WHERE {\n            <{obj_uri}> <http://purl.org/dc/terms#identifier> ?value .\n            }\n        \n \n        ",
+      "example": [
+        "SELECT DISTINCT ?value WHERE {\n            ?value <http://purl.org/dc/terms#identifier> ?prop .\n            FILTER(CONTAINS(STR(?prop), \"1_1@en^^<xsd:string>\"))\n        }"
+      ],
+      "param_map": [
+        "prop_uri"
+      ],
+      "param_desc": [
+        "The URI of the prop of interest."
+      ],
+      "return_map": [
+        "relation_uri"
+      ],
+      "return_desc": [
+        "Relation of interest."
+      ]
+    },
+    "sparql_results": []
+  },
+  "step2": {
+    "mapping_id": "http://atomic_questions.org/eprog66_mapping_20251116000313",
+    "sparql_query_info": {
+      "imp": "\n        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        PREFIX ep: <http://linkedu.eu/dedalo/explanationPattern.owl#>\n        PREFIX eo: <https://purl.org/heals/eo#>\n        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n        PREFIX dc: <http://purl.org/dc/elements/1.1/>\n        PREFIX food: <http://purl.org/heals/food/>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX provone: <http://purl.org/provone#>\n        PREFIX sio:<http://semanticscience.org/resource/>\n        SELECT distinct ?value where {\n  <{obj}> prov:qualifiedGeneration ?a1  .\n  ?a1 provone:hadEntity  ?value  .\n}\n        \n \n        ",
+      "example": [
+        "SELECT distinct ?value where {\n  <http://testwebsite/testProgram#id_20251115033339_643> prov:qualifiedGeneration ?a1  .\n  ?a1 provone:hadEntity  ?value  .\n}"
+      ],
+      "param_map": [
+        "obj"
+      ],
+      "param_desc": [
+        "The URI of the starting object."
+      ],
+      "return_map": [
+        "value"
+      ],
+      "return_desc": [
+        "The resulting values from the path traversal."
+      ]
+    },
+    "sparql_results": []
+  },
+  "step3": {
+    "mapping_id": "http://atomic_questions.org/eprog14_mapping_20251116000323",
+    "sparql_query_info": {
+      "imp": "\n        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        PREFIX ep: <http://linkedu.eu/dedalo/explanationPattern.owl#>\n        PREFIX eo: <https://purl.org/heals/eo#>\n        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n        PREFIX dc: <http://purl.org/dc/elements/1.1/>\n        PREFIX food: <http://purl.org/heals/food/>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX provone: <http://purl.org/provone#>\n        PREFIX sio:<http://semanticscience.org/resource/>\n        SELECT DISTINCT ?value WHERE {\n            <{obj_uri}> <http://www.w3.org/ns/prov#value> ?value .\n            }\n        \n \n        ",
+      "example": [
+        "SELECT DISTINCT ?value WHERE {\n            ?value <http://www.w3.org/ns/prov#value> ?prop .\n            FILTER(CONTAINS(STR(?prop), \"68@en^^<xsd:string>\"))\n        }"
+      ],
+      "param_map": [
+        "prop_uri"
+      ],
+      "param_desc": [
+        "The URI of the prop of interest."
+      ],
+      "return_map": [
+        "relation_uri"
+      ],
+      "return_desc": [
+        "Relation of interest."
+      ]
+    }
+  },
+  "step4": {
+    "mapping_id": "http://atomic_questions.org/eprog10_mapping_20251116000323",
+    "sparql_query_info": {
+      "imp": "\n        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        PREFIX ep: <http://linkedu.eu/dedalo/explanationPattern.owl#>\n        PREFIX eo: <https://purl.org/heals/eo#>\n        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n        PREFIX dc: <http://purl.org/dc/elements/1.1/>\n        PREFIX food: <http://purl.org/heals/food/>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX provone: <http://purl.org/provone#>\n        PREFIX sio:<http://semanticscience.org/resource/>\n        SELECT DISTINCT ?value WHERE {\n            <{obj_uri}> <http://testwebsite/testDFColumn#ingredientName> ?value .\n            }\n        \n \n        ",
+      "example": [
+        "SELECT DISTINCT ?value WHERE {\n            ?value <http://testwebsite/testDFColumn#ingredientName> ?prop .\n            FILTER(CONTAINS(STR(?prop), \"Oat@en^^<xsd:string>\"))\n        }"
+      ],
+      "param_map": [
+        "prop_uri"
+      ],
+      "param_desc": [
+        "The URI of the prop of interest."
+      ],
+      "return_map": [
+        "relation_uri"
+      ],
+      "return_desc": [
+        "Relation of interest."
+      ]
+    }
+  },
+  "step5": {},
+  "step6": {},
+  "summary": {
+    "answer": "No ingredients were extracted from DBpedia in execution '1_2' because the query did not return any data. Hence, there were no ingredients with unavailable values.",
+    "important_facts": [
+      "http://example.org/results/1_2"
+    ]
+  },
+  "results": [
+    {
+      "sub_question": "Retrieve details of the execution with identifier \"1_2.\"",
+      "results": {
+        "answer": "The SPARQL query results for execution '1_2' did not return any data, indicating no ingredients with unavailable values were extracted in that execution.",
+        "important_entities": [
+          "1_2"
+        ]
+      }
+    },
+    {
+      "sub_question": "What data entity was generated by the execution with identifier \"1_2\"?",
+      "results": {
+        "answer": "No data entity was generated in the execution with identifier '1_2' as the SPARQL results did not return any data.",
+        "important_entities": []
+      }
+    },
+    {
+      "sub_question": "Identify which of the data entities have no associated prov:value (from Step 3).",
+      "results": {
+        "answer": "There were no data entities generated from execution '1_2'; hence, there are no entities with an associated or unassociated prov:value.",
+        "important_entities": []
+      }
+    },
+    {
+      "sub_question": "Retrieve ingredient names corresponding to data entities from Step 5.",
+      "results": {
+        "answer": "Since no data entities were generated in execution '1_2', there are no ingredient names corresponding to these non-existent entities.",
+        "important_entities": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+program:
+  name: ChatBS-NexGen
+  location: "../ChatBS-NexGen"
+  version: "1.0.0"
+  description: "A program to analyze and generate provenance data for ChatBS-NexGen."
+
+files:
+  ignore:
+    - "prov.config.yaml"
+    - "gen_provone.R"
+    - "version.R"
+    - "setup_dependencies.R"
+
+  folder:
+    - "helpers"
+
+ttl: 
+  save_path: "chatbs_sample.ttl"
+  metadata_path: "chatbs_sample_metadata.json"
+  format: "turtle"
+  prefixes: [
+    { name: "provone", uri: "http://purl.org/provone#" },
+    { name: "skos", uri: "http://www.w3.org/2004/02/skos/core#" },
+    { name: "prov", uri: "http://www.w3.org/ns/prov#" },
+    { name: "rdfs", uri: "http://www.w3.org/2000/01/rdf-schema#" },
+    { name: "cwfo", uri: "http://cwf.tw.rpi.edu/vocab#" },
+    { name: "dcterms", uri: "http://purl.org/dc/terms#" },
+    { name: "ChatBS-NexGen", uri: "http://testwebsite/testProgram#" },
+    { name: "user", uri: "http://testwebsite/testUser#" },
+    { name: "eo", uri: "https://purl.org/heals/eo#" },
+    { name: "ep", uri: "http://linkedu.eu/dedalo/explanationPattern.owl#" },
+    { name: "sio", uri: "http://semanticscience.org/resource/" },
+    { name: "dc", uri: "http://purl.org/dc/elements/1.1/" },
+    { name: "DFColumn", uri: "http://testwebsite/testDFColumn#" },
+    { name: "fnom", uri: "https://w3id.org/function/vocabulary/mapping#" },
+    { name: "fnoi", uri: "hhttps://w3id.org/function/vocabulary/implementation#" },
+    { name: "fnoc", uri: "https://w3id.org/function/vocabulary/composition/0.1.0/" },
+    { name: "food", uri: "http://purl.org/heals/food/" },
+    { name: "dbo", uri: "http://dbpedia.org/ontology/" },
+    { name: "dbp", uri: "http://dbpedia.org/property/" },
+    { name: "dbt", uri: "http://dbpedia.org/resource/Template:" },
+    { name: "ques", uri: "http://atomic_questions.org/" },
+    { name: "xsd", uri: "http://www.w3.org/2001/XMLSchema#" },
+    { name: "fno", uri: "https://w3id.org/function/vocabulary/core#" }
+  ]

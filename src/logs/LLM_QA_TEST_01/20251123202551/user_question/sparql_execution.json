@@ -1,0 +1,140 @@
+{
+  "step1": {
+    "mapping_id": "http://atomic_questions.org/eprog30_mapping_20251116000234",
+    "sparql_query_info": {
+      "imp": "\n        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        PREFIX ep: <http://linkedu.eu/dedalo/explanationPattern.owl#>\n        PREFIX eo: <https://purl.org/heals/eo#>\n        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n        PREFIX dc: <http://purl.org/dc/elements/1.1/>\n        PREFIX food: <http://purl.org/heals/food/>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX provone: <http://purl.org/provone#>\n        PREFIX sio:<http://semanticscience.org/resource/>\n        SELECT distinct ?value where {\n  <{obj}> prov:wasGeneratedBy ?a1  .\n  ?a1 prov:qualifiedAssociation ?a3  .\n  ?a3 prov:hadPlan  ?value  .\n}\n        \n \n        ",
+      "example": [
+        "SELECT distinct ?value where {\n  <http://testwebsite/testProgram#Data-id_20251115034322_761-generated_answer> prov:wasGeneratedBy ?a1  .\n  ?a1 prov:qualifiedAssociation ?a3  .\n  ?a3 prov:hadPlan  ?value  .\n}"
+      ],
+      "param_map": [
+        "obj"
+      ],
+      "param_desc": [
+        "The URI of the starting object."
+      ],
+      "return_map": [
+        "value"
+      ],
+      "return_desc": [
+        "The resulting values from the path traversal."
+      ]
+    },
+    "sparql_results": [
+      {
+        "value": "http://testwebsite/testProgram#llm_chat"
+      }
+    ]
+  },
+  "step2": {
+    "mapping_id": "http://atomic_questions.org/eprog26_mapping_20251116000229",
+    "sparql_query_info": {
+      "imp": "\n        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        PREFIX ep: <http://linkedu.eu/dedalo/explanationPattern.owl#>\n        PREFIX eo: <https://purl.org/heals/eo#>\n        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n        PREFIX dc: <http://purl.org/dc/elements/1.1/>\n        PREFIX food: <http://purl.org/heals/food/>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX provone: <http://purl.org/provone#>\n        PREFIX sio:<http://semanticscience.org/resource/>\n        SELECT distinct ?value where {\n  <{obj}> prov:wasGeneratedBy  ?value  .\n}\n        \n \n        ",
+      "example": [
+        "SELECT distinct ?value where {\n  <http://testwebsite/testProgram#Data-id_20251115035922_251-generated_answer> prov:wasGeneratedBy  ?value  .\n}"
+      ],
+      "param_map": [
+        "obj"
+      ],
+      "param_desc": [
+        "The URI of the starting object."
+      ],
+      "return_map": [
+        "value"
+      ],
+      "return_desc": [
+        "The resulting values from the path traversal."
+      ]
+    },
+    "sparql_results": []
+  },
+  "step3": {
+    "mapping_id": "http://atomic_questions.org/eprog64_mapping_20251116000312",
+    "sparql_query_info": {
+      "imp": "\n        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        PREFIX ep: <http://linkedu.eu/dedalo/explanationPattern.owl#>\n        PREFIX eo: <https://purl.org/heals/eo#>\n        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n        PREFIX dc: <http://purl.org/dc/elements/1.1/>\n        PREFIX food: <http://purl.org/heals/food/>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX provone: <http://purl.org/provone#>\n        PREFIX sio:<http://semanticscience.org/resource/>\n        SELECT distinct ?value where {\n  <{obj}> prov:qualifiedAssociation ?a1  .\n  ?a1 prov:hadPlan  ?value  .\n}\n        \n \n        ",
+      "example": [
+        "SELECT distinct ?value where {\n  <http://testwebsite/testProgram#id_20251115040022_931> prov:qualifiedAssociation ?a1  .\n  ?a1 prov:hadPlan  ?value  .\n}"
+      ],
+      "param_map": [
+        "obj"
+      ],
+      "param_desc": [
+        "The URI of the starting object."
+      ],
+      "return_map": [
+        "value"
+      ],
+      "return_desc": [
+        "The resulting values from the path traversal."
+      ]
+    },
+    "sparql_results": []
+  },
+  "step4": {
+    "mapping_id": "http://atomic_questions.org/eprog19_mapping_20251116000323",
+    "sparql_query_info": {
+      "imp": "\n        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        PREFIX ep: <http://linkedu.eu/dedalo/explanationPattern.owl#>\n        PREFIX eo: <https://purl.org/heals/eo#>\n        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n        PREFIX dc: <http://purl.org/dc/elements/1.1/>\n        PREFIX food: <http://purl.org/heals/food/>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX provone: <http://purl.org/provone#>\n        PREFIX sio:<http://semanticscience.org/resource/>\n        SELECT DISTINCT ?value WHERE {\n            <{obj_uri}> <http://purl.org/dc/elements/1.1/description> ?value .\n            }\n        \n \n        ",
+      "example": [
+        "SELECT DISTINCT ?value WHERE {\n            <http://testwebsite/testProgram#DF_combine> <http://purl.org/dc/elements/1.1/description> ?value .\n            }"
+      ],
+      "param_map": [
+        "obj_uri"
+      ],
+      "param_desc": [
+        "The URI of the object of interest."
+      ],
+      "return_map": [
+        "relation_uri"
+      ],
+      "return_desc": [
+        "Relation of interest."
+      ]
+    },
+    "sparql_results": [
+      {
+        "value": "Chat with the LLM.@en^^<xsd:string>"
+      }
+    ]
+  },
+  "summary": {
+    "answer": "The instructions to generate the post-processing function are related to the 'Chat with the LLM' program as inferred from its description. However, specific execution details or instructions are not explicitly provided in the current results.",
+    "important_facts": [
+      "http://testwebsite/testProgram#llm_chat"
+    ]
+  },
+  "results": [
+    {
+      "sub_question": "Look for the Data object generated by an execution which involves the post-processing function",
+      "results": {
+        "answer": "The Data object generated by an execution involving the post-processing function is represented by the URL: http://testwebsite/testProgram#llm_chat.",
+        "important_entities": [
+          "http://testwebsite/testProgram#llm_chat"
+        ]
+      }
+    },
+    {
+      "sub_question": "What was the execution responsible for generating this data item related to the post-processing function?",
+      "results": {
+        "answer": "The execution responsible for generating the data item related to the post-processing function is not provided in the current step SPARQL results.",
+        "important_entities": [
+          "http://testwebsite/testProgram#llm_chat"
+        ]
+      }
+    },
+    {
+      "sub_question": "What was the program associated with this execution that produced the post-processing function?",
+      "results": {
+        "answer": "The program associated with the execution that produced the post-processing function is not provided in the current step SPARQL results.",
+        "important_entities": [
+          "http://testwebsite/testProgram#llm_chat"
+        ]
+      }
+    },
+    {
+      "sub_question": "For the identified program from step 3, what are the dc:description values?",
+      "results": {
+        "answer": "The 'dc:description' value for the identified program is 'Chat with the LLM'.",
+        "important_entities": []
+      }
+    }
+  ]
+}

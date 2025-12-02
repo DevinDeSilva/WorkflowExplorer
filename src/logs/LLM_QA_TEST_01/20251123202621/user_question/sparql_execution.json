@@ -1,0 +1,134 @@
+{
+  "step1": {
+    "mapping_id": "http://atomic_questions.org/eprog66_mapping_20251116000313",
+    "sparql_query_info": {
+      "imp": "\n        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        PREFIX ep: <http://linkedu.eu/dedalo/explanationPattern.owl#>\n        PREFIX eo: <https://purl.org/heals/eo#>\n        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n        PREFIX dc: <http://purl.org/dc/elements/1.1/>\n        PREFIX food: <http://purl.org/heals/food/>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX provone: <http://purl.org/provone#>\n        PREFIX sio:<http://semanticscience.org/resource/>\n        SELECT distinct ?value where {\n  <{obj}> prov:qualifiedGeneration ?a1  .\n  ?a1 provone:hadEntity  ?value  .\n}\n        \n \n        ",
+      "example": [
+        "SELECT distinct ?value where {\n  <http://testwebsite/testProgram#id_20251115033339_643> prov:qualifiedGeneration ?a1  .\n  ?a1 provone:hadEntity  ?value  .\n}"
+      ],
+      "param_map": [
+        "obj"
+      ],
+      "param_desc": [
+        "The URI of the starting object."
+      ],
+      "return_map": [
+        "value"
+      ],
+      "return_desc": [
+        "The resulting values from the path traversal."
+      ]
+    },
+    "sparql_results": []
+  },
+  "step2": {
+    "mapping_id": "http://atomic_questions.org/eprog26_mapping_20251116000229",
+    "sparql_query_info": {
+      "imp": "\n        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        PREFIX ep: <http://linkedu.eu/dedalo/explanationPattern.owl#>\n        PREFIX eo: <https://purl.org/heals/eo#>\n        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n        PREFIX dc: <http://purl.org/dc/elements/1.1/>\n        PREFIX food: <http://purl.org/heals/food/>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX provone: <http://purl.org/provone#>\n        PREFIX sio:<http://semanticscience.org/resource/>\n        SELECT distinct ?value where {\n  <{obj}> prov:wasGeneratedBy  ?value  .\n}\n        \n \n        ",
+      "example": [
+        "SELECT distinct ?value where {\n  <http://testwebsite/testProgram#Data-id_20251115035922_251-generated_answer> prov:wasGeneratedBy  ?value  .\n}"
+      ],
+      "param_map": [
+        "obj"
+      ],
+      "param_desc": [
+        "The URI of the starting object."
+      ],
+      "return_map": [
+        "value"
+      ],
+      "return_desc": [
+        "The resulting values from the path traversal."
+      ]
+    }
+  },
+  "step3": {
+    "mapping_id": "http://atomic_questions.org/eprog64_mapping_20251116000312",
+    "sparql_query_info": {
+      "imp": "\n        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        PREFIX ep: <http://linkedu.eu/dedalo/explanationPattern.owl#>\n        PREFIX eo: <https://purl.org/heals/eo#>\n        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n        PREFIX dc: <http://purl.org/dc/elements/1.1/>\n        PREFIX food: <http://purl.org/heals/food/>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX provone: <http://purl.org/provone#>\n        PREFIX sio:<http://semanticscience.org/resource/>\n        SELECT distinct ?value where {\n  <{obj}> prov:qualifiedAssociation ?a1  .\n  ?a1 prov:hadPlan  ?value  .\n}\n        \n \n        ",
+      "example": [
+        "SELECT distinct ?value where {\n  <http://testwebsite/testProgram#id_20251115040022_931> prov:qualifiedAssociation ?a1  .\n  ?a1 prov:hadPlan  ?value  .\n}"
+      ],
+      "param_map": [
+        "obj"
+      ],
+      "param_desc": [
+        "The URI of the starting object."
+      ],
+      "return_map": [
+        "value"
+      ],
+      "return_desc": [
+        "The resulting values from the path traversal."
+      ]
+    },
+    "sparql_results": []
+  },
+  "step4": {
+    "mapping_id": "http://atomic_questions.org/eprog4_mapping_20251116000202",
+    "sparql_query_info": {
+      "imp": "\n        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        PREFIX ep: <http://linkedu.eu/dedalo/explanationPattern.owl#>\n        PREFIX eo: <https://purl.org/heals/eo#>\n        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n        PREFIX dc: <http://purl.org/dc/elements/1.1/>\n        PREFIX food: <http://purl.org/heals/food/>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX provone: <http://purl.org/provone#>\n        PREFIX sio:<http://semanticscience.org/resource/>\n        SELECT distinct ?value where {\n  <{obj}> provone:hadEntity ?a1  .\n  ?a1 prov:wasGeneratedBy ?a3  .\n  ?a3 prov:qualifiedAssociation ?a5  .\n  ?a5 prov:hadPlan  ?value  .\n}\n        \n \n        ",
+      "example": [
+        "SELECT distinct ?value where {\n  <http://testwebsite/testProgram#Usage-id_20251115033652_758-system_prompt> provone:hadEntity ?a1  .\n  ?a1 prov:wasGeneratedBy ?a3  .\n  ?a3 prov:qualifiedAssociation ?a5  .\n  ?a5 prov:hadPlan  ?value  .\n}"
+      ],
+      "param_map": [
+        "obj"
+      ],
+      "param_desc": [
+        "The URI of the starting object."
+      ],
+      "return_map": [
+        "value"
+      ],
+      "return_desc": [
+        "The resulting values from the path traversal."
+      ]
+    },
+    "sparql_results": [
+      {
+        "value": "http://testwebsite/testProgram#system_prompt_generator"
+      }
+    ]
+  },
+  "step5": {},
+  "summary": {
+    "answer": "The LLM used to generate the system prompt template is linked by the URI 'http://testwebsite/testProgram#system_prompt_generator'.",
+    "important_facts": [
+      "http://testwebsite/testProgram#system_prompt_generator"
+    ]
+  },
+  "results": [
+    {
+      "sub_question": "What data items are involved in generating the system prompt template?",
+      "results": {
+        "answer": "The data items involved in generating the system prompt template were not provided in the SPARQL results.",
+        "important_entities": []
+      }
+    },
+    {
+      "sub_question": "What program was associated with this execution that generated the system prompt template?",
+      "results": {
+        "answer": "The SPARQL results did not provide information on the program associated with the execution that generated the system prompt template.",
+        "important_entities": []
+      }
+    },
+    {
+      "sub_question": "Which specific LLM is linked to the program responsible for generating the system prompt template?",
+      "results": {
+        "answer": "The specific LLM linked to the program responsible for generating the system prompt template is represented by the URI 'http://testwebsite/testProgram#system_prompt_generator'.",
+        "important_entities": [
+          "http://testwebsite/testProgram#system_prompt_generator"
+        ]
+      }
+    },
+    {
+      "sub_question": "Retrieve the LLM characteristics used for the system prompt template.",
+      "results": {
+        "answer": "The SPARQL results required to retrieve the LLM characteristics were not provided.",
+        "important_entities": [
+          "http://testwebsite/testProgram#system_prompt_generator"
+        ]
+      }
+    }
+  ]
+}

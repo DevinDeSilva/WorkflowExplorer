@@ -1,0 +1,148 @@
+{
+  "step1": {
+    "mapping_id": "http://atomic_questions.org/eprog0_mapping_20251116000159",
+    "sparql_query_info": {
+      "imp": "\n        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        PREFIX ep: <http://linkedu.eu/dedalo/explanationPattern.owl#>\n        PREFIX eo: <https://purl.org/heals/eo#>\n        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n        PREFIX dc: <http://purl.org/dc/elements/1.1/>\n        PREFIX food: <http://purl.org/heals/food/>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX provone: <http://purl.org/provone#>\n        PREFIX sio:<http://semanticscience.org/resource/>\n        SELECT distinct ?value where {\n  <{obj}> prov:hadMember  ?value  .\n}\n        \n \n        ",
+      "example": [
+        "SELECT distinct ?value where {\n  <http://testwebsite/testProgram#Collection-id_20251115040257_916-kg_info> prov:hadMember  ?value  .\n}"
+      ],
+      "param_map": [
+        "obj"
+      ],
+      "param_desc": [
+        "The URI of the starting object."
+      ],
+      "return_map": [
+        "value"
+      ],
+      "return_desc": [
+        "The resulting values from the path traversal."
+      ]
+    },
+    "sparql_results": [
+      {
+        "value": "http://testwebsite/testProgram#Data-id_20251115040257_909-kg_info"
+      }
+    ]
+  },
+  "step2": {
+    "mapping_id": "http://atomic_questions.org/eprog2_mapping_20251116000200",
+    "sparql_query_info": {
+      "imp": "\n        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        PREFIX ep: <http://linkedu.eu/dedalo/explanationPattern.owl#>\n        PREFIX eo: <https://purl.org/heals/eo#>\n        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n        PREFIX dc: <http://purl.org/dc/elements/1.1/>\n        PREFIX food: <http://purl.org/heals/food/>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX provone: <http://purl.org/provone#>\n        PREFIX sio:<http://semanticscience.org/resource/>\n        SELECT distinct ?value where {\n  <{obj}> provone:hadEntity  ?value  .\n}\n        \n \n        ",
+      "example": [
+        "SELECT distinct ?value where {\n  <http://testwebsite/testProgram#Usage-id_20251115033428_480-entity> provone:hadEntity  ?value  .\n}"
+      ],
+      "param_map": [
+        "obj"
+      ],
+      "param_desc": [
+        "The URI of the starting object."
+      ],
+      "return_map": [
+        "value"
+      ],
+      "return_desc": [
+        "The resulting values from the path traversal."
+      ]
+    },
+    "sparql_results": []
+  },
+  "step3": {
+    "mapping_id": "http://atomic_questions.org/eprog3_mapping_20251116000201",
+    "sparql_query_info": {
+      "imp": "\n        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        PREFIX ep: <http://linkedu.eu/dedalo/explanationPattern.owl#>\n        PREFIX eo: <https://purl.org/heals/eo#>\n        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n        PREFIX dc: <http://purl.org/dc/elements/1.1/>\n        PREFIX food: <http://purl.org/heals/food/>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX provone: <http://purl.org/provone#>\n        PREFIX sio:<http://semanticscience.org/resource/>\n        SELECT distinct ?value where {\n  <{obj}> provone:hadEntity ?a1  .\n  ?a1 prov:wasGeneratedBy  ?value  .\n}\n        \n \n        ",
+      "example": [
+        "SELECT distinct ?value where {\n  <http://testwebsite/testProgram#Usage-id_20251115040255_69-system_prompt> provone:hadEntity ?a1  .\n  ?a1 prov:wasGeneratedBy  ?value  .\n}"
+      ],
+      "param_map": [
+        "obj"
+      ],
+      "param_desc": [
+        "The URI of the starting object."
+      ],
+      "return_map": [
+        "value"
+      ],
+      "return_desc": [
+        "The resulting values from the path traversal."
+      ]
+    },
+    "sparql_results": []
+  },
+  "step4": {
+    "mapping_id": "http://atomic_questions.org/eprog4_mapping_20251116000202",
+    "sparql_query_info": {
+      "imp": "\n        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        PREFIX ep: <http://linkedu.eu/dedalo/explanationPattern.owl#>\n        PREFIX eo: <https://purl.org/heals/eo#>\n        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n        PREFIX dc: <http://purl.org/dc/elements/1.1/>\n        PREFIX food: <http://purl.org/heals/food/>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX provone: <http://purl.org/provone#>\n        PREFIX sio:<http://semanticscience.org/resource/>\n        SELECT distinct ?value where {\n  <{obj}> provone:hadEntity ?a1  .\n  ?a1 prov:wasGeneratedBy ?a3  .\n  ?a3 prov:qualifiedAssociation ?a5  .\n  ?a5 prov:hadPlan  ?value  .\n}\n        \n \n        ",
+      "example": [
+        "SELECT distinct ?value where {\n  <http://testwebsite/testProgram#Usage-id_20251115033652_758-system_prompt> provone:hadEntity ?a1  .\n  ?a1 prov:wasGeneratedBy ?a3  .\n  ?a3 prov:qualifiedAssociation ?a5  .\n  ?a5 prov:hadPlan  ?value  .\n}"
+      ],
+      "param_map": [
+        "obj"
+      ],
+      "param_desc": [
+        "The URI of the starting object."
+      ],
+      "return_map": [
+        "value"
+      ],
+      "return_desc": [
+        "The resulting values from the path traversal."
+      ]
+    },
+    "sparql_results": []
+  },
+  "step5": {},
+  "summary": {
+    "answer": "The SPARQL query used in the data knowledge retrieval step is not directly provided in the results of the previous sub-questions. The available data indicates that queries were executed to identify data items in a collection, retrieve data for specific usage events, and determine program executions, but the exact SPARQL query statements are not detailed.",
+    "important_facts": [
+      "http://testwebsite/testProgram#Data-id_20251115040257_909-kg_info"
+    ]
+  },
+  "results": [
+    {
+      "sub_question": "Identify the data items that are members of a specific collection",
+      "results": {
+        "answer": "The SPARQL query in the data knowledge retrieval step was designed to identify data items that are members of a specific collection. However, the SPARQL query itself is not directly provided in the results.",
+        "important_entities": [
+          "http://testwebsite/testProgram#Data-id_20251115040257_909-kg_info"
+        ]
+      }
+    },
+    {
+      "sub_question": "Retrieve the data used in specific usage events related to this data item retrieval",
+      "results": {
+        "answer": "The SPARQL query in this step was intended to retrieve the data used in specific usage events related to the data item retrieval process. However, the actual SPARQL query execution results are not directly available.",
+        "important_entities": [
+          "http://testwebsite/testProgram#Data-id_20251115040257_909-kg_info"
+        ]
+      }
+    },
+    {
+      "sub_question": "Identify the execution event responsible for generating this specific data item",
+      "results": {
+        "answer": "The SPARQL query results for identifying the execution event responsible for generating the specific data item are not directly provided.",
+        "important_entities": [
+          "http://testwebsite/testProgram#Data-id_20251115040257_909-kg_info"
+        ]
+      }
+    },
+    {
+      "sub_question": "Determine the program associated with the execution of this data retrieval",
+      "results": {
+        "answer": "The SPARQL results for determining the program associated with the execution of this data retrieval are not directly provided.",
+        "important_entities": [
+          "http://testwebsite/testProgram#Data-id_20251115040257_909-kg_info"
+        ]
+      }
+    },
+    {
+      "sub_question": "Retrieve the SPARQL query utilized in the program identified in Step 4",
+      "results": {
+        "answer": "The SPARQL query used in the program identified in Step 4 is not directly provided in the previous results.",
+        "important_entities": [
+          "http://testwebsite/testProgram#Data-id_20251115040257_909-kg_info"
+        ]
+      }
+    }
+  ]
+}

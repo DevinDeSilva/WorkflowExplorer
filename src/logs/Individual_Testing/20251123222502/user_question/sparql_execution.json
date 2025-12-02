@@ -1,0 +1,14 @@
+{
+  "plan1": {},
+  "summary": {
+    "answer": "The pipeline consists of 5 overall steps.",
+    "important_facts": [
+      "http://example.org/resource/pipeline_step1",
+      "http://example.org/resource/pipeline_step2",
+      "http://example.org/resource/pipeline_step3",
+      "http://example.org/resource/pipeline_step4",
+      "http://example.org/resource/pipeline_step5"
+    ]
+  },
+  "results": []
+}

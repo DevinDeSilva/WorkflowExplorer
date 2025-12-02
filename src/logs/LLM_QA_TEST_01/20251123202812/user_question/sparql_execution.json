@@ -1,0 +1,95 @@
+{
+  "step1": {
+    "mapping_id": "http://atomic_questions.org/eprog0_mapping_20251116000323",
+    "sparql_query_info": {
+      "imp": "SELECT DISTINCT ?value WHERE {\n                            ?value a <{class_uri}> .\n                            }",
+      "example": [
+        "SELECT DISTINCT ?value WHERE {\n                            ?value a <http://purl.org/provone#Execution> .\n                            }"
+      ],
+      "param_map": [
+        "class_uri"
+      ],
+      "param_desc": [
+        "The URI of the class to explore."
+      ],
+      "return_map": [
+        "objects"
+      ],
+      "return_desc": [
+        "A list of objects belonging to the specified class."
+      ]
+    },
+    "sparql_results": []
+  },
+  "step2": {
+    "mapping_id": "http://atomic_questions.org/eprog10_mapping_20251116000323",
+    "sparql_query_info": {
+      "imp": "\n        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        PREFIX ep: <http://linkedu.eu/dedalo/explanationPattern.owl#>\n        PREFIX eo: <https://purl.org/heals/eo#>\n        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n        PREFIX dc: <http://purl.org/dc/elements/1.1/>\n        PREFIX food: <http://purl.org/heals/food/>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX provone: <http://purl.org/provone#>\n        PREFIX sio:<http://semanticscience.org/resource/>\n        SELECT DISTINCT ?value WHERE {\n            <{obj_uri}> <http://testwebsite/testDFColumn#ingredientName> ?value .\n            }\n        \n \n        ",
+      "example": [
+        "SELECT DISTINCT ?value WHERE {\n            ?value <http://testwebsite/testDFColumn#ingredientName> ?prop .\n            FILTER(CONTAINS(STR(?prop), \"Oat@en^^<xsd:string>\"))\n        }"
+      ],
+      "param_map": [
+        "prop_uri"
+      ],
+      "param_desc": [
+        "The URI of the prop of interest."
+      ],
+      "return_map": [
+        "relation_uri"
+      ],
+      "return_desc": [
+        "Relation of interest."
+      ]
+    }
+  },
+  "step3": {
+    "mapping_id": "http://atomic_questions.org/eprog11_mapping_20251116000323",
+    "sparql_query_info": {
+      "imp": "\n        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        PREFIX ep: <http://linkedu.eu/dedalo/explanationPattern.owl#>\n        PREFIX eo: <https://purl.org/heals/eo#>\n        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n        PREFIX dc: <http://purl.org/dc/elements/1.1/>\n        PREFIX food: <http://purl.org/heals/food/>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX provone: <http://purl.org/provone#>\n        PREFIX sio:<http://semanticscience.org/resource/>\n        SELECT DISTINCT ?value WHERE {\n            <{obj_uri}> <http://testwebsite/testDFColumn#sugarG> ?value .\n            }\n        \n \n        ",
+      "example": [
+        "SELECT DISTINCT ?value WHERE {\n            <http://testwebsite/testProgram#Data-id_20251115033330_248-kg_info> <http://testwebsite/testDFColumn#sugarG> ?value .\n            }"
+      ],
+      "param_map": [
+        "obj_uri"
+      ],
+      "param_desc": [
+        "The URI of the object of interest."
+      ],
+      "return_map": [
+        "relation_uri"
+      ],
+      "return_desc": [
+        "Relation of interest."
+      ]
+    }
+  },
+  "step4": {},
+  "step5": {},
+  "summary": {
+    "answer": "There are no suggested ingredients with more than 1 gram of sugar for experiment ID 1_2 as no data items are available for this experiment.",
+    "important_facts": []
+  },
+  "results": [
+    {
+      "sub_question": "Explore the data items available in the experiment with ID 1_2",
+      "results": {
+        "answer": "There are no available data items for experiment with ID 1_2 in the provided SPARQL results.",
+        "important_entities": []
+      }
+    },
+    {
+      "sub_question": "Filter ingredients that have sugar content above 1 gram",
+      "results": {
+        "answer": "There are no data items available to filter for sugar content, as the previous result indicated that the experiment with ID 1_2 has no available data.",
+        "important_entities": []
+      }
+    },
+    {
+      "sub_question": "List the names of the ingredients that pass the sugar content filter",
+      "results": {
+        "answer": "There are no ingredients listed because the experiment with ID 1_2 has no available data.",
+        "important_entities": []
+      }
+    }
+  ]
+}

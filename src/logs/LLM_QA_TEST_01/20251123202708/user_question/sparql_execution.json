@@ -1,0 +1,95 @@
+{
+  "step1": {
+    "mapping_id": "http://atomic_questions.org/eprog45_mapping_20251116000251",
+    "sparql_query_info": {
+      "imp": "\n        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        PREFIX ep: <http://linkedu.eu/dedalo/explanationPattern.owl#>\n        PREFIX eo: <https://purl.org/heals/eo#>\n        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n        PREFIX dc: <http://purl.org/dc/elements/1.1/>\n        PREFIX food: <http://purl.org/heals/food/>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX provone: <http://purl.org/provone#>\n        PREFIX sio:<http://semanticscience.org/resource/>\n        SELECT distinct ?value where {\n  <{obj}> sio:SIO_000229  ?value  .\n}\n        \n \n        ",
+      "example": [
+        "SELECT distinct ?value where {\n  <http://testwebsite/testProgram#AI_Task-information_extractor> sio:SIO_000229  ?value  .\n}"
+      ],
+      "param_map": [
+        "obj"
+      ],
+      "param_desc": [
+        "The URI of the starting object."
+      ],
+      "return_map": [
+        "value"
+      ],
+      "return_desc": [
+        "The resulting values from the path traversal."
+      ]
+    },
+    "sparql_results": []
+  },
+  "step2": {
+    "mapping_id": "http://atomic_questions.org/eprog49_mapping_20251116000255",
+    "sparql_query_info": {
+      "imp": "\n        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        PREFIX ep: <http://linkedu.eu/dedalo/explanationPattern.owl#>\n        PREFIX eo: <https://purl.org/heals/eo#>\n        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n        PREFIX dc: <http://purl.org/dc/elements/1.1/>\n        PREFIX food: <http://purl.org/heals/food/>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX provone: <http://purl.org/provone#>\n        PREFIX sio:<http://semanticscience.org/resource/>\n        SELECT distinct ?value where {\n  <{obj}> provone:hasOutPort ?a1  .\n  ?a1 provone:connectsTo  ?value  .\n}\n        \n \n        ",
+      "example": [
+        "SELECT distinct ?value where {\n  <http://testwebsite/testProgram#llm_chat> provone:hasOutPort ?a1  .\n  ?a1 provone:connectsTo  ?value  .\n}"
+      ],
+      "param_map": [
+        "obj"
+      ],
+      "param_desc": [
+        "The URI of the starting object."
+      ],
+      "return_map": [
+        "value"
+      ],
+      "return_desc": [
+        "The resulting values from the path traversal."
+      ]
+    }
+  },
+  "step3": {
+    "mapping_id": "http://atomic_questions.org/eprog20_mapping_20251116000221",
+    "sparql_query_info": {
+      "imp": "\n        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n        PREFIX owl: <http://www.w3.org/2002/07/owl#>\n        PREFIX ep: <http://linkedu.eu/dedalo/explanationPattern.owl#>\n        PREFIX eo: <https://purl.org/heals/eo#>\n        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n        PREFIX dc: <http://purl.org/dc/elements/1.1/>\n        PREFIX food: <http://purl.org/heals/food/>\n        PREFIX prov: <http://www.w3.org/ns/prov#>\n        PREFIX provone: <http://purl.org/provone#>\n        PREFIX sio:<http://semanticscience.org/resource/>\n        SELECT distinct ?value where {\n  <{obj}> prov:wasGeneratedBy ?a1  .\n  ?a1 prov:qualifiedAssociation ?a3  .\n  ?a3 prov:hadPlan ?a5  .\n  ?a5 provone:hasInPort ?a7  .\n  ?a7 provone:connectsTo  ?value  .\n}\n        \n \n        ",
+      "example": [
+        "SELECT distinct ?value where {\n  <http://testwebsite/testProgram#Data-id_20251115034054_620-generated_answer> prov:wasGeneratedBy ?a1  .\n  ?a1 prov:qualifiedAssociation ?a3  .\n  ?a3 prov:hadPlan ?a5  .\n  ?a5 provone:hasInPort ?a7  .\n  ?a7 provone:connectsTo  ?value  .\n}"
+      ],
+      "param_map": [
+        "obj"
+      ],
+      "param_desc": [
+        "The URI of the starting object."
+      ],
+      "return_map": [
+        "value"
+      ],
+      "return_desc": [
+        "The resulting values from the path traversal."
+      ]
+    },
+    "sparql_results": [
+      {
+        "value": "http://testwebsite/testProgram#channel_system_prompt"
+      }
+    ]
+  },
+  "summary": {
+    "answer": "The next step after getting the LLM output is to connect to the channel identified as 'http://testwebsite/testProgram#channel_system_prompt'.",
+    "important_facts": [
+      "http://testwebsite/testProgram#channel_system_prompt"
+    ]
+  },
+  "results": [
+    {
+      "sub_question": "What is the output program (LLM) of this AI task?",
+      "results": {
+        "answer": "The output program (LLM) of this AI task is not specified in the step information or results provided.",
+        "important_entities": []
+      }
+    },
+    {
+      "sub_question": "What is the next program or task that connects to the channel identified in Step 2?",
+      "results": {
+        "answer": "The next program or task connects to 'http://testwebsite/testProgram#channel_system_prompt'.",
+        "important_entities": [
+          "http://testwebsite/testProgram#channel_system_prompt"
+        ]
+      }
+    }
+  ]
+}
