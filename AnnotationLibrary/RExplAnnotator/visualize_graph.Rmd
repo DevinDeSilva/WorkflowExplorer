@@ -1,0 +1,662 @@
+
+```{r}
+
+library(rdflib)
+library(visNetwork)
+library(stringr)
+library(yaml)
+library(jsonlite)
+
+```
+
+```{r}
+
+config <- yaml::read_yaml("prov.config.yaml")
+ttl_metadata <- readLines("../../chatbs_sample_metadata.json")
+ttl_metadata <- fromJSON(ttl_metadata)
+
+```
+
+```{r}
+namespaces_in_config <- list()
+for (p in names(ttl_metadata$namespaces)){
+  namespaces_in_config[[p]] <- ttl_metadata$namespaces[[p]][1]
+}
+
+namespaces_in_config <- unlist(namespaces_in_config)
+namespaces_in_config
+```
+
+```{r}
+
+g <- rdf_parse("../../chatbs_sample.ttl", format = "turtle")
+```
+
+```{r}
+
+q <- "
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT ?s ?p ?o ?type
+       (isLiteral(?o) AS ?is_literal) 
+       (isIRI(?o) AS ?isIRI) 
+       (isBlank(?o) AS ?isBlank)
+       (DATATYPE(?o) AS ?datatype) 
+       (LANG(?o) AS ?lang)
+WHERE {
+  ?s ?p ?o .
+  ?s rdf:type ?type .
+  FILTER(?p != rdfs:description)
+  FILTER(BOUND(?type))
+}"
+df <- rdf_query(g, q)
+
+```
+
+```{r}
+df
+
+```
+
+```{r}
+
+ns <- namespaces_in_config
+
+ns
+```
+
+```{r}
+
+
+df
+```
+```{r}
+
+# --- shorten full IRIs to CURIEs using a namespace map
+shorten_iri <- function(x, ns) {
+  if (length(ns) == 0) return(x)
+  for (p in names(ns)) {
+    base <- ns[[p]]
+    # replace only when x starts with base
+    idx <- startsWith(x, base)
+    x[idx] <- paste0(p, ":", substring(x[idx], nchar(base) + 1L))
+  }
+  x
+}
+
+```
+
+```{r}
+
+visualize_graph <- function(df, ns, literals_as_nodes = TRUE, collapse_predicates = FALSE, add_legend = TRUE){
+  df$s_lbl <- shorten_iri(as.character(df$s), ns)
+  df$p_lbl <- shorten_iri(as.character(df$p), ns)
+  df$o_lbl <- ifelse(df$is_literal, as.character(df$o), shorten_iri(as.character(df$o), ns))
+  df$type_lbl <- shorten_iri(as.character(df$p), ns)
+  
+  # 4) build nodes/edges
+  if (literals_as_nodes) {
+    nodes_ids <- unique(c(df$s_lbl, df$o_lbl))
+    nodes <- data.frame(
+      id = nodes_ids,
+      label = nodes_ids,
+      group = ifelse(nodes_ids %in% df$o_lbl[df$is_literal], "Literal", "IRI"),
+      stringsAsFactors = FALSE
+    )
+    edges <- data.frame(
+      from = df$s_lbl,
+      to   = df$o_lbl,
+      label = df$p_lbl,
+      arrows = "to",
+      smooth = TRUE,
+      stringsAsFactors = FALSE
+    )
+  } else {
+    # literals become edge labels; only IRI objects become nodes
+    iri_rows <- !df$is_literal
+    nodes_ids <- unique(c(df$s_lbl, df$o_lbl[iri_rows]))
+    nodes <- data.frame(
+      id = nodes_ids,
+      label = nodes_ids,
+      group = "IRI",
+      stringsAsFactors = FALSE
+    )
+    # edge label: predicate [+ literal value if object is literal]
+    edge_label <- ifelse(
+      df$is_literal,
+      paste0(df$p_lbl, " = ", df$o_lbl),
+      df$p_lbl
+    )
+    edges <- data.frame(
+      from = df$s_lbl,
+      to   = ifelse(df$is_literal, df$s_lbl, df$o_lbl),  # point back to subject for literal edges
+      label = edge_label,
+      arrows = "to",
+      dashes = df$is_literal,  # style literal edges differently
+      smooth = TRUE,
+      stringsAsFactors = FALSE
+    )
+    # optionally collapse duplicate predicate labels on same (s, o) pair
+    if (collapse_predicates) {
+      edges <- aggregate(. ~ from + to + label, data = edges, FUN = function(z) z[1], na.action = na.pass)
+    }
+  }
+  
+  # 5) simple styling + legend
+  net <- visNetwork(nodes, edges, width = "100%", height = "700px") |>
+    visEdges(arrows = "to") |>
+    visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE) |>
+    visPhysics(stabilization = TRUE)
+  
+  if (add_legend) {
+    if (literals_as_nodes) {
+      net <- net |>
+        visGroups(groupname = "IRI") |>
+        visGroups(groupname = "Literal") |>
+        visLegend()
+    } else {
+      net <- net |>
+        visLegend(addEdges = data.frame(label = c("IRI edge", "Literal annotation"),
+                                        dashes = c(FALSE, TRUE)))
+    }
+  }
+  
+  net
+}
+
+
+```
+
+```{r}
+
+visualize_graph <- function(
+  df, ns,
+  literals_as_nodes = TRUE,
+  collapse_predicates = TRUE,
+  add_legend = TRUE,
+  drop_na_type = FALSE
+){
+  stopifnot(all(c("s","p","o","type","is_literal") %in% names(df)))
+  if (drop_na_type) {
+    df <- df[!is.na(df$type) & nzchar(as.character(df$type)), , drop = FALSE]
+  }
+  if (nrow(df) == 0L) stop("No rows to visualize after filtering.")
+
+  # 1) labels
+  df$s_lbl    <- shorten_iri(as.character(df$s), ns)
+  df$p_lbl    <- shorten_iri(as.character(df$p), ns)
+  df$o_lbl    <- ifelse(df$is_literal, as.character(df$o), shorten_iri(as.character(df$o), ns))
+  df$type_lbl <- shorten_iri(as.character(df$type), ns)
+
+  # ---- Node type assignment (by type_lbl) ----
+  type_map <- tapply(df$type_lbl, df$s_lbl, function(x) paste(sort(unique(x)), collapse = ", "))
+  subj_types <- unname(type_map[df$s_lbl])
+
+  if (literals_as_nodes) {
+    # all subjects + objects
+    nodes_ids <- unique(c(df$s_lbl, df$o_lbl))
+
+    # group: type_lbl for subjects, "Literal" for literal objects
+    groups <- ifelse(
+      nodes_ids %in% df$o_lbl[df$is_literal],
+      "Literal",
+      unname(type_map[match(nodes_ids, names(type_map))])
+    )
+    groups[is.na(groups)] <- "Unknown"
+
+    nodes <- data.frame(
+      id    = nodes_ids,
+      label = nodes_ids,
+      group = groups,
+      stringsAsFactors = FALSE
+    )
+
+    edges <- data.frame(
+      from   = df$s_lbl,
+      to     = df$o_lbl,
+      label  = df$p_lbl,
+      arrows = "to",
+      smooth = TRUE,
+      stringsAsFactors = FALSE
+    )
+
+  } else {
+    # only IRI objects become nodes
+    iri_rows <- !df$is_literal
+    nodes_ids <- unique(c(df$s_lbl, df$o_lbl[iri_rows]))
+
+    groups <- unname(type_map[match(nodes_ids, names(type_map))])
+    groups[is.na(groups)] <- "Unknown"
+
+    nodes <- data.frame(
+      id    = nodes_ids,
+      label = nodes_ids,
+      group = groups,
+      stringsAsFactors = FALSE
+    )
+
+    edge_label <- ifelse(df$is_literal,
+                         paste0(df$p_lbl, " = ", df$o_lbl),
+                         df$p_lbl)
+
+    edges <- data.frame(
+      from   = df$s_lbl,
+      to     = ifelse(df$is_literal, df$s_lbl, df$o_lbl),
+      label  = edge_label,
+      arrows = "to",
+      dashes = df$is_literal,
+      smooth = TRUE,
+      stringsAsFactors = FALSE
+    )
+
+    if (collapse_predicates) {
+      edges <- edges[!duplicated(edges[, c("from","to","label")]), , drop = FALSE]
+    }
+  }
+
+  # 2) build network
+  net <- visNetwork::visNetwork(nodes, edges, width = "100%", height = "700px") |>
+    visNetwork::visEdges(arrows = "to") |>
+    visNetwork::visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE) |>
+    visNetwork::visPhysics(stabilization = TRUE)
+
+  # 3) add legend by type_lbl
+  if (add_legend) {
+    # unique groups = all distinct type_lbl values + Literal/Unknown
+    groups <- unique(nodes$group)
+    for (g in groups) {
+      net <- net |> visNetwork::visGroups(groupname = g)
+    }
+    net <- net |> visNetwork::visLegend()
+  }
+
+  net
+}
+
+```
+
+```{r}
+# Each literal occurrence becomes its own node (no merging across triples).
+# Literal nodes are never connected to each other; edges go subject -> literal node.
+visualize_graph <- function(
+  df, ns,
+  literals_as_nodes = TRUE,
+  collapse_predicates = TRUE,
+  add_legend = TRUE,
+  drop_na_type = FALSE
+){
+  stopifnot(all(c("s","p","o","type","is_literal") %in% names(df)))
+  if (drop_na_type) {
+    df <- df[!is.na(df$type) & nzchar(as.character(df$type)), , drop = FALSE]
+  }
+  if (nrow(df) == 0L) stop("No rows to visualize after filtering.")
+
+  # 1) labels
+  df$s_lbl    <- shorten_iri(as.character(df$s), ns)
+  df$p_lbl    <- shorten_iri(as.character(df$p), ns)
+  df$o_lbl    <- ifelse(df$is_literal, as.character(df$o), shorten_iri(as.character(df$o), ns))
+  df$type_lbl <- shorten_iri(as.character(df$type), ns)
+
+  # Map subject -> concatenated types (for tooltips, grouping)
+  type_map <- tapply(df$type_lbl, df$s_lbl, function(x) paste(sort(unique(x)), collapse = ", "))
+
+  if (literals_as_nodes) {
+    # --- Make object node IDs ---
+    # For literals: unique ID per row/occurrence; label remains the literal text
+    # For IRIs: shared ID = shortened IRI so they merge as one node
+    row_id <- seq_len(nrow(df))
+    df$o_id <- ifelse(df$is_literal, paste0("lit#", row_id), df$o_lbl)
+
+    # Build nodes: subjects + all objects (with per-occurrence IDs for literals)
+    subj_ids <- unique(df$s_lbl)
+    obj_ids  <- unique(df$o_id)
+    nodes_ids <- unique(c(subj_ids, obj_ids))
+
+    # Node labels:
+    # - subject nodes: their s_lbl
+    # - literal object nodes: display literal text (o_lbl)
+    # - IRI object nodes: their o_lbl (IRI short)
+    node_label <- setNames(nodes_ids, nodes_ids)
+    # set labels for literal nodes by matching their IDs back to rows
+    lit_rows <- df$is_literal
+    if (any(lit_rows)) {
+      lit_map <- setNames(df$o_lbl[lit_rows], df$o_id[lit_rows])     # id -> literal text
+      node_label[names(lit_map)] <- lit_map
+    }
+    # Group by df$type_lbl for subjects/IRI objects; "Literal" for literal nodes
+    node_group <- rep(NA_character_, length(nodes_ids))
+    names(node_group) <- nodes_ids
+
+    # subjects: group by their concatenated types
+    node_group[subj_ids] <- unname(type_map[match(subj_ids, names(type_map))])
+    node_group[is.na(node_group)] <- "Unknown"
+
+    # literal objects
+    node_group[names(lit_map)] <- "Literal"
+
+    # IRI objects: try to inherit their own type if they appear as subject elsewhere
+    iri_obj_ids <- setdiff(obj_ids, names(lit_map))
+    if (length(iri_obj_ids)) {
+      node_group[iri_obj_ids] <- ifelse(
+        !is.na(type_map[match(iri_obj_ids, names(type_map))]),
+        unname(type_map[match(iri_obj_ids, names(type_map))]),
+        node_group[iri_obj_ids]  # keep existing (likely "Unknown")
+      )
+    }
+
+    nodes <- data.frame(
+      id    = nodes_ids,
+      label = unname(node_label[nodes_ids]),
+      group = unname(node_group[nodes_ids]),
+      stringsAsFactors = FALSE
+    )
+
+    # Edges: subject -> object (use o_id so each literal occurrence is distinct)
+    edges <- data.frame(
+      from   = df$s_lbl,
+      to     = df$o_id,
+      label  = df$p_lbl,
+      arrows = "to",
+      smooth = TRUE,
+      stringsAsFactors = FALSE
+    )
+
+  } else {
+    # literals become edge annotations; only IRI objects become nodes
+    iri_rows <- !df$is_literal
+    nodes_ids <- unique(c(df$s_lbl, df$o_lbl[iri_rows]))
+
+    groups <- unname(type_map[match(nodes_ids, names(type_map))])
+    groups[is.na(groups)] <- "Unknown"
+
+    nodes <- data.frame(
+      id    = nodes_ids,
+      label = nodes_ids,
+      group = groups,
+      stringsAsFactors = FALSE
+    )
+
+    edge_label <- ifelse(df$is_literal,
+                         paste0(df$p_lbl, " = ", df$o_lbl),
+                         df$p_lbl)
+
+    edges <- data.frame(
+      from   = df$s_lbl,
+      to     = ifelse(df$is_literal, df$s_lbl, df$o_lbl),
+      label  = edge_label,
+      arrows = "to",
+      dashes = df$is_literal,
+      smooth = TRUE,
+      stringsAsFactors = FALSE
+    )
+
+    if (collapse_predicates) {
+      edges <- edges[!duplicated(edges[, c("from","to","label")]), , drop = FALSE]
+    }
+  }
+
+  # 2) build network
+  net <- visNetwork::visNetwork(nodes, edges, width = "100%", height = "700px") |>
+    visNetwork::visEdges(arrows = "to") |>
+    visNetwork::visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE) |>
+    visNetwork::visPhysics(stabilization = TRUE)
+
+  # 3) add legend (types + Literal/Unknown as present)
+  if (add_legend) {
+    groups <- unique(nodes$group)
+    for (g in groups) {
+      net <- net |> visNetwork::visGroups(groupname = g)
+    }
+    net <- net |> visNetwork::visLegend()
+  }
+
+  net
+}
+
+
+```
+
+```{r}
+
+#visualize_graph(df, ns)
+```
+
+```{r}
+
+q <- "
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ChatBS-NexGen:<http://testwebsite/testProgram#>
+PREFIX prov:<http://www.w3.org/ns/prov#>
+PREFIX provone:<http://purl.org/provone#>
+prefix ChatBS-NexGen:<http://testwebsite/testProgram#>
+
+SELECT ?s ?p ?o ?type
+       (isLiteral(?o) AS ?is_literal) 
+       (isIRI(?o) AS ?isIRI) 
+       (isBlank(?o) AS ?isBlank)
+       (DATATYPE(?o) AS ?datatype) 
+       (LANG(?o) AS ?lang)
+WHERE {
+{
+  ?s ?p ?a .
+  Filter(?s = <http://testwebsite/testProgram#id_20251005025730_209>)
+  Filter(?p = prov:used)
+  ?s a ?type . 
+  ?a prov:value ?o
+}
+}
+
+
+
+"
+df <- rdf_query(g, q)
+df
+ 
+```
+```{r}
+
+visualize_graph(df, ns, literals_as_nodes = TRUE)
+
+```
+
+
+```{r}
+
+q <- "
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ChatBS-NexGen:<http://testwebsite/testProgram#>
+PREFIX prov:<http://www.w3.org/ns/prov#>
+PREFIX provone:<http://purl.org/provone#>
+prefix ChatBS-NexGen:<http://testwebsite/testProgram#>
+
+SELECT ?s ?s ?p ?o 
+WHERE {
+
+  ?s a provone:Program .
+  Filter(?s != ChatBS-NexGen:Pipeline)
+  ?s ?p ?o .
+  ?s a ?type
+  Filter(?p != rdfs:description)
+  FILTER(BOUND(?type))
+  Filter(?o != provone:Program)
+}
+
+
+
+"
+df <- rdf_query(g, q)
+df
+ 
+```
+
+```{r}
+
+q <- "
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ChatBS-NexGen:<http://testwebsite/testProgram#>
+PREFIX prov:<http://www.w3.org/ns/prov#>
+PREFIX provone:<http://purl.org/provone#>
+prefix ChatBS-NexGen:<http://testwebsite/testProgram#>
+
+SELECT ?s ?p ?o ?type
+       (isLiteral(?o) AS ?is_literal) 
+       (isIRI(?o) AS ?isIRI) 
+       (isBlank(?o) AS ?isBlank)
+       (DATATYPE(?o) AS ?datatype) 
+       (LANG(?o) AS ?lang)
+WHERE {
+{
+  ?s a provone:Program .
+  Filter(?s != ChatBS-NexGen:Pipeline)
+  ?s ?p ?o .
+  ?s1 ?p ?o . 
+  ?s a ?type
+  Filter(?p != rdfs:description)
+  FILTER(BOUND(?type))
+  Filter(?o != provone:Program)
+}union 
+  
+  {
+   ?s ?p ?o .
+   ?s a provone:Channel .
+   ?s rdf:type ?type .
+   
+   Filter(?p != rdfs:description)
+   FILTER(BOUND(?type))
+   Filter(?o != provone:Channel)
+   Filter(?s != ChatBS-NexGen:Pipeline)
+   
+  }
+  
+  union 
+  
+  {
+   ?s ?p ?o .
+   ?s provone:connectsTo ?o .
+   ?s rdf:type ?type .
+   
+   Filter(?p != rdfs:description)
+   FILTER(BOUND(?type))
+   Filter(?o != provone:Port)
+  }
+  
+  union 
+  
+  {
+   ?s ?p ?o .
+   ?s1 provone:hasInput ?s .
+   ?s rdf:type ?type .
+   
+   Filter(?p != rdfs:description)
+   FILTER(BOUND(?type))
+   Filter(?o != provone:Port)
+  }
+  
+  union 
+  
+  {
+   ?s ?p ?o .
+   ?s1 provone:hasOutput ?s .
+   ?s rdf:type ?type .
+   
+   Filter(?p != rdfs:description)
+   FILTER(BOUND(?type))
+   Filter(?o != provone:Port)
+  }
+  
+  union 
+  
+  {
+   ?s ?p ?o .
+   FILTER(STRSTARTS(STR(?p), STR(ChatBS-NexGen:)))
+   ?s rdf:type ?type .
+  }
+}
+
+
+
+"
+df <- rdf_query(g, q)
+df
+ 
+```
+
+
+```{r}
+
+visualize_graph(df, ns, literals_as_nodes = FALSE)
+
+```
+
+```{r}
+
+q <- "
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ChatBS-NexGen:<http://testwebsite/testProgram#>
+PREFIX prov:<http://www.w3.org/ns/prov#>
+PREFIX provone:<http://purl.org/provone#>
+
+SELECT ?s ?p ?o ?type
+       (isLiteral(?o) AS ?is_literal) 
+       (isIRI(?o) AS ?isIRI) 
+       (isBlank(?o) AS ?isBlank)
+       (DATATYPE(?o) AS ?datatype) 
+       (LANG(?o) AS ?lang)
+WHERE {
+  {
+  ?s ?p ?o .
+  ?s a provone:Execution . 
+  ?s rdf:type ?type .
+  Filter(?p != prov:qualifiedUsage)
+  Filter(?p != prov:qualifiedGeneration)
+  Filter(?p != prov:qualifiedAssociation)
+  Filter(?p != prov:wasAssociatedWith)
+  Filter(?p != rdf:type)
+  
+  } 
+  
+  union {
+  ?s ?p ?o .
+  ?s prov:wasGeneratedBy ?o . 
+  ?s rdf:type ?type .
+  Filter(?p != rdf:type)
+  } 
+  
+  union {
+  ?s ?p ?o .
+  ?s a provone:Data . 
+  ?s rdf:type ?type .
+  Filter(?o != provone:Data)
+  } 
+  
+  union {
+  ?s ?p ?o .
+  ?s prov:hadMember ?o .
+  ?s rdf:type ?type .
+  }
+  
+}"
+#union
+#  {
+#  ?s ?p ?o .
+#  ?s a prov:Data .
+#  Filter(?p != rdf:type)
+#  }
+df <- rdf_query(g, q)
+df
+```
+
+
+
+
+```{r}
+
+visualize_graph(df, ns)
+
+```
+

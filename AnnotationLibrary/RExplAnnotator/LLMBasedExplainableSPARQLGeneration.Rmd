@@ -1,0 +1,69 @@
+---
+title: "LLMBasedExplainableSPARQLGeneration.Rmd"
+output: html_notebook
+---
+
+```{r}
+library(ellmer)
+library(SPARQLchunks)
+library(DT)
+library(dplyr)
+library(jsonlite)
+library(RCurl)
+library(rlist)
+library(rdflib)
+library(tidyr)
+library(stringr)
+library(rdflib)
+
+```
+
+```{r}
+library(readxl)
+library(dplyr)
+library(tidyr)
+
+
+model_version <- "gpt-4o"
+```
+
+```{r}
+llm_chat <- function(system_prompt, user_prompt, model_version){
+  if ((startsWith(model_version, "gpt-")) || (startsWith(model_version, "o1-"))) {
+    # generated answers from `gpt-x` models
+    client <- chat_openai(
+      system_prompt = system_prompt,
+      model = model_version, echo="none")
+  } else { 
+    # generated answers from in-house deployed `llama-3.1` model
+    client <- chat_openai(
+      system_prompt = system_prompt,
+      base_url = "http://idea-llm-01.idea.rpi.edu:5000/v1/",
+      echo="none"
+    )
+  }
+  answer <- client$chat(user_prompt)
+  return (answer)
+}
+
+```
+
+```{r}
+config <- yaml::read_yaml("prov.config.yaml")
+ttl_metadata <- readLines("../../chatbs_sample_metadata.json")
+ttl_metadata <- fromJSON(ttl_metadata)
+
+namespaces_in_config <- list()
+for (p in names(ttl_metadata$namespaces)){
+  namespaces_in_config[[p]] <- ttl_metadata$namespaces[[p]][1]
+}
+
+namespaces_in_config <- unlist(namespaces_in_config)
+g <- rdf_parse("../../chatbs_sample.ttl", format = "turtle")
+```
+
+```{r}
+
+```
+
+

@@ -1,0 +1,449 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+
+library(rdflib)
+library(visNetwork)
+library(stringr)
+library(yaml)
+library(jsonlite)
+
+```
+
+```{r}
+
+config <- yaml::read_yaml("prov.config.yaml")
+ttl_metadata <- readLines("../../chatbs_sample_metadata.json")
+ttl_metadata <- fromJSON(ttl_metadata)
+
+```
+
+```{r}
+namespaces_in_config <- list()
+for (p in names(ttl_metadata$namespaces)){
+  namespaces_in_config[[p]] <- ttl_metadata$namespaces[[p]][1]
+}
+
+namespaces_in_config <- unlist(namespaces_in_config)
+namespaces_in_config
+```
+
+```{r}
+
+g <- rdf_parse("../../chatbs_sample.ttl", format = "turtle")
+```
+
+Question 1: what are the AI generated functions code in this ?
+
+```{r}
+
+q <- "
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX food: <http://purl.org/heals/food/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX provone: <http://purl.org/provone#>
+PREFIX sio:  <http://semanticscience.org/resource/>
+PREFIX eo: <https://purl.org/heals/eo#>
+
+SELECT DISTINCT ?ai_task ?code 
+WHERE {
+  ?ai_task rdf:type eo:AITask .
+  ?system_out sio:SIO_000229 ?ai_task .
+  ?system_out prov:value ?code
+}
+
+"
+df <- rdf_query(g, q)
+
+
+df
+```
+
+Question 2: what are the inputs used in the AI function for post processing?
+
+```{r}
+
+q <- "
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX food: <http://purl.org/heals/food/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX provone: <http://purl.org/provone#>
+PREFIX sio:  <http://semanticscience.org/resource/>
+PREFIX eo: <https://purl.org/heals/eo#>
+
+SELECT DISTINCT ?prog_lbl ?main_prog ?inputs_lbl
+WHERE {
+  ?ai_task rdf:type eo:AITask .
+  ?main_prog provone:hasSubProgram ?ai_task .
+  ?main_prog rdfs:label ?prog_lbl .
+  Filter(contains(LCASE(str(?prog_lbl)), 'post'))
+  ?ai_task sio:SIO_000230 ?inputs.
+  ?inputs prov:value ?inputs_lbl . 
+}
+
+"
+df <- rdf_query(g, q)
+
+
+df
+```
+
+
+Question 3: what are the ingredients that were suggested by the LLM during the experiment ?
+```{r}
+
+q <- "
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX food: <http://purl.org/heals/food/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX provone: <http://purl.org/provone#>
+PREFIX sio:  <http://semanticscience.org/resource/>
+PREFIX eo: <https://purl.org/heals/eo#>
+
+SELECT DISTINCT ?data_lbl, (count(distinct ?data) as ?numInst)
+WHERE {
+  {
+    SELECT DISTINCT ?prog
+    WHERE {
+      ?prog a provone:Program ;
+            rdfs:label ?prog_lbl .
+      FILTER(CONTAINS(LCASE(STR(?prog_lbl)), \"information\"))
+    }
+  }
+  
+  ?all_executions a provone:Execution .
+  ?all_executions prov:qualifiedAssociation ?asso .
+  ?asso prov:hadPlan ?plan .
+  Filter(?prog = ?plan)
+  ?col prov:wasGeneratedBy ?all_executions . 
+  ?col prov:hadMember ?data .
+  ?data prov:value ?data_lbl . 
+}
+
+GROUP BY ?data_lbl
+ORDER BY DESC(?numInst)
+
+
+"
+
+df <- rdf_query(g, q)
+
+df
+
+```
+
+Question 4: what are the ingredients that were suggested by the LLM during the experiment that has no value in the knowledge graph?
+```{r}
+
+q <- "
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX food: <http://purl.org/heals/food/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX provone: <http://purl.org/provone#>
+PREFIX sio:  <http://semanticscience.org/resource/>
+PREFIX eo: <https://purl.org/heals/eo#>
+
+SELECT DISTINCT ?inp_lbl ?ing ?GI
+WHERE {
+  {
+    SELECT DISTINCT ?prog
+    WHERE {
+      ?prog a provone:Program ;
+            rdfs:label ?prog_lbl .
+      FILTER(CONTAINS(LCASE(STR(?prog_lbl)), \"sparql\"))
+    }
+  }
+  
+  ?all_executions a provone:Execution .
+  ?all_executions prov:qualifiedAssociation ?asso .
+  ?asso prov:hadPlan ?plan .
+  Filter(?prog = ?plan)
+  ?col prov:wasGeneratedBy ?all_executions . 
+  ?all_executions prov:used ?inp .
+  ?inp prov:value ?inp_lbl . 
+  ?col prov:hadMember ?data .
+  ?data food:GlycemicIndex ?GI . 
+  ?data food:Ingredient ?ing .
+  filter(?ing = 'NA@en' || ?ing = '@en')
+}
+"
+
+df <- rdf_query(g, q)
+
+df
+
+```
+
+Question 5: what are the ingredients that were suggested by the LLM during the experiment that has values in the knowledge 
+graph but no GI values?
+```{r}
+
+q <- "
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX food: <http://purl.org/heals/food/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX provone: <http://purl.org/provone#>
+PREFIX sio:  <http://semanticscience.org/resource/>
+PREFIX eo: <https://purl.org/heals/eo#>
+
+SELECT DISTINCT ?inp_lbl ?ing ?GI
+WHERE {
+  {
+    SELECT DISTINCT ?prog
+    WHERE {
+      ?prog a provone:Program ;
+            rdfs:label ?prog_lbl .
+      FILTER(CONTAINS(LCASE(STR(?prog_lbl)), \"sparql\"))
+    }
+  }
+  
+  ?all_executions a provone:Execution .
+  ?all_executions prov:qualifiedAssociation ?asso .
+  ?asso prov:hadPlan ?plan .
+  Filter(?prog = ?plan)
+  ?col prov:wasGeneratedBy ?all_executions . 
+  ?all_executions prov:used ?inp .
+  ?inp prov:value ?inp_lbl . 
+  ?col prov:hadMember ?data .
+  ?data food:Ingredient ?ing .
+  filter(?ing != 'NA@en')
+  filter(?ing != '@en')
+  ?data food:GlycemicIndex ?GI . 
+  filter(?GI = 'NA@en' || ?ing = '@en')
+}
+"
+
+df <- rdf_query(g, q)
+
+df
+
+```
+
+Question 6: what are the ingredients that were suggested by the LLM during the experiment that has values in the knowledge 
+graph and GI values?
+```{r}
+
+q <- "
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX food: <http://purl.org/heals/food/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX provone: <http://purl.org/provone#>
+PREFIX sio:  <http://semanticscience.org/resource/>
+PREFIX eo: <https://purl.org/heals/eo#>
+
+SELECT DISTINCT ?inp_lbl ?ing ?GI
+WHERE {
+  {
+    SELECT DISTINCT ?prog
+    WHERE {
+      ?prog a provone:Program ;
+            rdfs:label ?prog_lbl .
+      FILTER(CONTAINS(LCASE(STR(?prog_lbl)), \"sparql\"))
+    }
+  }
+  
+  ?all_executions a provone:Execution .
+  ?all_executions prov:qualifiedAssociation ?asso .
+  ?asso prov:hadPlan ?plan .
+  Filter(?prog = ?plan)
+  ?col prov:wasGeneratedBy ?all_executions . 
+  ?all_executions prov:used ?inp .
+  ?inp prov:value ?inp_lbl . 
+  ?col prov:hadMember ?data .
+  ?data food:Ingredient ?ing .
+  filter(?ing != 'NA@en')
+  filter(?ing != '@en')
+  ?data food:GlycemicIndex ?GI . 
+  filter(?GI != 'NA@en')
+  filter(?GI != '@en')
+}
+"
+
+df <- rdf_query(g, q)
+
+df
+
+```
+
+Question 7: what are the groups of diagnsis of the patients and the number of patients?
+
+```{r}
+
+q <- "
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX food: <http://purl.org/heals/food/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX provone: <http://purl.org/provone#>
+PREFIX sio:  <http://semanticscience.org/resource/>
+PREFIX eo: <https://purl.org/heals/eo#>
+
+SELECT distinct ?entity_lbl (count(?entity_lbl) as ?numInst)
+WHERE {
+  {
+    SELECT DISTINCT ?prog
+    WHERE {
+      ?prog a provone:Program ;
+            rdfs:label ?prog_lbl .
+      FILTER(CONTAINS(LCASE(STR(?prog_lbl)), \"system\"))
+    }
+  }
+  
+  ?all_executions a provone:Execution .
+  ?all_executions prov:qualifiedAssociation ?asso .
+  ?asso prov:hadPlan ?plan .
+  Filter(?prog = ?plan)
+  ?all_executions prov:qualifiedUsage ?usages .
+  ?usages provone:hadInPort ?inp_p . 
+  ?inp_p rdfs:label ?inp_p_lbl
+  
+  Filter(?inp_p_lbl = 'Input port for diagnosis@en')
+  ?usages provone:hadEntity ?entity .
+  ?entity prov:value ?entity_lbl . 
+}
+
+GROUP BY ?entity_lbl
+ORDER BY DESC(?numInst)
+"
+
+df <- rdf_query(g, q)
+
+df
+
+```
+
+
+Question 8: what are the groups of diagnsis of the patients and the average GI values of the suggested ingridients?
+
+```{r}
+
+q <- "
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX food: <http://purl.org/heals/food/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX provone: <http://purl.org/provone#>
+PREFIX sio:  <http://semanticscience.org/resource/>
+PREFIX eo: <https://purl.org/heals/eo#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?entity_lbl  (AVG(?GI_num) AS ?averageGI)
+WHERE {
+  {
+    SELECT DISTINCT ?prog
+    WHERE {
+      ?prog a provone:Program ;
+            rdfs:label ?prog_lbl .
+      FILTER(CONTAINS(LCASE(STR(?prog_lbl)), \"sparql\"))
+    }
+  }
+  
+  ?all_executions a provone:Execution .
+  ?all_executions prov:qualifiedAssociation ?asso .
+  ?asso prov:hadPlan ?plan .
+  Filter(?prog = ?plan)
+  ?col prov:wasGeneratedBy ?all_executions . 
+  ?all_executions prov:used ?inp .
+  ?inp prov:value ?inp_lbl . 
+  ?col prov:hadMember ?data .
+  ?data food:Ingredient ?ing .
+  filter(?ing != 'NA@en')
+  filter(?ing != '@en')
+  ?data food:GlycemicIndex ?GI . 
+  filter(?GI != 'NA@en')
+  filter(?GI != '@en')
+  
+  ?nexe prov:wasInformedBy ?all_executions .
+  ?nexe2 prov:wasInformedBy ?nexe .
+  ?nexe3 prov:wasInformedBy ?nexe2 .
+  ?nexe3 prov:qualifiedUsage ?nexe3_usages . 
+  ?nexe3_usages provone:hadInPort ?inp_p . 
+  ?inp_p rdfs:label ?inp_p_lbl . 
+  Filter(?inp_p_lbl = 'Input port for diagnosis@en')
+  ?nexe3_usages provone:hadEntity ?entity .
+  ?entity prov:value ?entity_lbl .
+  BIND(STRLEN(?GI) - 3 AS ?newLength)
+  BIND(xsd:integer(SUBSTR(?GI, 1, ?newLength)) AS ?GI_num)
+}
+
+GROUP BY ?entity_lbl
+ORDER BY DESC(?averageGI )
+"
+
+df <- rdf_query(g, q)
+
+df
+
+```
+
+
+Question 9: what are the groups of diagnsis of the patients and the average GI values of the suggested ingridients comprehensive?
+
+```{r}
+
+q <- "
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX food: <http://purl.org/heals/food/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX provone: <http://purl.org/provone#>
+PREFIX sio:  <http://semanticscience.org/resource/>
+PREFIX eo: <https://purl.org/heals/eo#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?entity_lbl ?ing ?GI_num
+WHERE {
+  {
+    SELECT DISTINCT ?prog
+    WHERE {
+      ?prog a provone:Program ;
+            rdfs:label ?prog_lbl .
+      FILTER(CONTAINS(LCASE(STR(?prog_lbl)), \"sparql\"))
+    }
+  }
+  
+  ?all_executions a provone:Execution .
+  ?all_executions prov:qualifiedAssociation ?asso .
+  ?asso prov:hadPlan ?plan .
+  Filter(?prog = ?plan)
+  ?col prov:wasGeneratedBy ?all_executions . 
+  ?all_executions prov:used ?inp .
+  ?inp prov:value ?inp_lbl . 
+  ?col prov:hadMember ?data .
+  ?data food:Ingredient ?ing .
+  filter(?ing != 'NA@en')
+  filter(?ing != '@en')
+  ?data food:GlycemicIndex ?GI . 
+  filter(?GI != 'NA@en')
+  filter(?GI != '@en')
+  
+  ?nexe prov:wasInformedBy ?all_executions .
+  ?nexe2 prov:wasInformedBy ?nexe .
+  ?nexe3 prov:wasInformedBy ?nexe2 .
+  ?nexe3 prov:qualifiedUsage ?nexe3_usages . 
+  ?nexe3_usages provone:hadInPort ?inp_p . 
+  ?inp_p rdfs:label ?inp_p_lbl . 
+  Filter(?inp_p_lbl = 'Input port for diagnosis@en')
+  ?nexe3_usages provone:hadEntity ?entity .
+  ?entity prov:value ?entity_lbl .
+  BIND(STRLEN(?GI) - 3 AS ?newLength)
+  BIND(xsd:integer(SUBSTR(?GI, 1, ?newLength)) AS ?GI_num)
+}
+
+ORDER BY DESC(?GI_num)
+"
+
+df <- rdf_query(g, q)
+
+df
+
+```
